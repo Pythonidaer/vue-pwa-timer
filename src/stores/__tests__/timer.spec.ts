@@ -118,10 +118,9 @@ describe('Timer Store', () => {
       store.saveTime('Test notes')
       
       expect(store.savedTimes).toHaveLength(1)
-      expect(store.savedTimes[0].time).toBe('01:05')
-      expect(store.savedTimes[0].notes).toBe('Test notes')
-      expect(store.savedTimes[0].hidden).toBe(false)
-      expect(store.savedTimes[0].id).toBeDefined()
+      expect(store.savedTimes[0]!.time).toBe('01:05')
+      expect(store.savedTimes[0]!.notes).toBe('Test notes')
+      expect(store.savedTimes[0]!.id).toBeDefined()
     })
 
     it('should save time without notes', () => {
@@ -133,7 +132,7 @@ describe('Timer Store', () => {
       store.saveTime()
       
       expect(store.savedTimes).toHaveLength(1)
-      expect(store.savedTimes[0].notes).toBe('')
+      expect(store.savedTimes[0]!.notes).toBe('')
     })
 
     it('should add saved times to the beginning of the array', () => {
@@ -150,8 +149,8 @@ describe('Timer Store', () => {
       store.saveTime('Second')
       
       expect(store.savedTimes).toHaveLength(2)
-      expect(store.savedTimes[0].notes).toBe('Second')
-      expect(store.savedTimes[1].notes).toBe('First')
+      expect(store.savedTimes[0]!.notes).toBe('Second')
+      expect(store.savedTimes[1]!.notes).toBe('First')
     })
   })
 
@@ -164,7 +163,7 @@ describe('Timer Store', () => {
       store.pause()
       store.saveTime('Test')
       
-      const id = store.savedTimes[0].id
+      const id = store.savedTimes[0]!.id
       store.deleteSavedTime(id)
       
       expect(store.savedTimes).toHaveLength(0)
@@ -189,25 +188,7 @@ describe('Timer Store', () => {
     })
   })
 
-  describe('Toggle Hide Saved Time', () => {
-    it('should toggle hidden state of saved time', () => {
-      const store = useTimerStore()
-      
-      store.start()
-      vi.advanceTimersByTime(10000)
-      store.pause()
-      store.saveTime('Test')
-      
-      const id = store.savedTimes[0].id
-      expect(store.savedTimes[0].hidden).toBe(false)
-      
-      store.toggleHideSavedTime(id)
-      expect(store.savedTimes[0].hidden).toBe(true)
-      
-      store.toggleHideSavedTime(id)
-      expect(store.savedTimes[0].hidden).toBe(false)
-    })
-  })
+  // Hide functionality removed - tests removed
 
   describe('Export Functions', () => {
     it('should export a single saved time', () => {
@@ -220,7 +201,7 @@ describe('Timer Store', () => {
       store.pause()
       store.saveTime('Test notes')
       
-      const id = store.savedTimes[0].id
+      const id = store.savedTimes[0]!.id
       store.exportSavedTime(id)
       
       expect(createElementSpy).toHaveBeenCalledWith('a')
