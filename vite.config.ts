@@ -20,21 +20,22 @@ export default defineConfig({
         theme_color: '#0d0d0d',
         background_color: '#0d0d0d',
         display: 'standalone',
-        start_url: './',
-        scope: './',
+        id: '/vue-pwa-timer/',
+        start_url: '/vue-pwa-timer/',
+        scope: '/vue-pwa-timer/',
         icons: [
           {
-            src: '/favicon.ico',
+            src: './favicon.ico',
             sizes: '64x64',
             type: 'image/x-icon'
           },
           {
-            src: '/pwa-192x192.png',
+            src: './pwa-192x192.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: '/pwa-512x512.png',
+            src: './pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png'
           }
