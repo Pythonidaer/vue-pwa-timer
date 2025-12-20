@@ -326,45 +326,49 @@ function toggleDrawer() {
   justify-content: center;
   min-height: 50vh;
   padding: 2rem;
+  background: #0d0d0d;
 }
 
 .btn-launch-pip {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 2rem;
-  background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-size: 1.1rem;
-  font-weight: 600;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+  border: 0.5px solid rgba(42, 42, 42, 0.5);
+  border-radius: 4px;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 400;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 
-    0 4px 8px rgba(0, 0, 0, 0.3),
-    0 2px 4px rgba(0, 0, 0, 0.2),
-    inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  transition: all 0.15s ease;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .btn-launch-pip:hover {
-  background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
-  box-shadow: 
-    0 6px 12px rgba(46, 125, 50, 0.4),
-    0 2px 6px rgba(0, 0, 0, 0.2),
-    inset 0 2px 4px rgba(255, 255, 255, 0.25);
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  border-color: rgba(42, 42, 42, 0.8);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .btn-launch-pip:active {
-  transform: translateY(0);
-  box-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.3),
-    inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  transform: translateY(1px);
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02);
 }
 
 .btn-launch-pip i {
-  font-size: 1.2rem;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.btn-launch-pip:hover i {
+  color: #ccc;
 }
 
 .pip-message {

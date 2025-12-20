@@ -146,6 +146,8 @@ const visibleSavedTimes = computed(() =>
         <div class="saved-time-main">
           <div class="saved-time-info">
             <span class="time">{{ savedTime.time }}</span>
+          </div>
+          <div class="saved-time-actions">
             <button
               v-if="savedTime.notes"
               class="btn-toggle-notes"
@@ -154,8 +156,6 @@ const visibleSavedTimes = computed(() =>
             >
               <i :class="expandedNotes.has(savedTime.id) ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
             </button>
-          </div>
-          <div class="saved-time-actions">
             <button
               class="btn-action"
               @click="timerStore.exportSavedTime(savedTime.id)"
@@ -337,7 +337,7 @@ const visibleSavedTimes = computed(() =>
 
 .notes-input {
   padding: 0.3rem 2.5rem 0.3rem 0.5rem;
-  border: 1px solid #888;
+  border: 1px solid #ccc;
   border-radius: 3px;
   font-size: 0.85rem;
   background: #1a1a1a;
@@ -348,7 +348,7 @@ const visibleSavedTimes = computed(() =>
 
 .notes-input:focus {
   outline: none;
-  border-color: #2196f3;
+  border-color: #fff;
   background: #222;
 }
 
@@ -425,7 +425,7 @@ const visibleSavedTimes = computed(() =>
 .btn-toggle-notes {
   background: none;
   border: none;
-  color: #888;
+  color: #ccc;
   cursor: pointer;
   font-size: 0.85rem;
   padding: 0.2rem;
@@ -442,12 +442,13 @@ const visibleSavedTimes = computed(() =>
 }
 
 .btn-toggle-notes:hover {
-  color: #ccc;
+  color: #fff;
 }
 
 .saved-time-actions {
   display: flex;
   gap: 0.3rem;
+  align-items: center;
 }
 
 .btn-action {
@@ -458,7 +459,7 @@ const visibleSavedTimes = computed(() =>
   padding: 0.2rem;
   border-radius: 4px;
   transition: all 0.15s ease;
-  color: #888;
+  color: #ccc;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -473,7 +474,7 @@ const visibleSavedTimes = computed(() =>
 .btn-action:hover {
   background: #1a1a1a;
   border-color: #2a2a2a;
-  color: #999;
+  color: #fff;
 }
 
 .btn-action.btn-delete {
@@ -489,7 +490,7 @@ const visibleSavedTimes = computed(() =>
 .saved-time-notes {
   margin-top: 0.4rem;
   padding: 0.4rem;
-  border-top: 1px solid #888;
+  border-top: 1px solid #ccc;
   background: #1a1a1a;
   color: #ffffff;
   font-size: 0.85rem;

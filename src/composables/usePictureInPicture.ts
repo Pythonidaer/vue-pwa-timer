@@ -261,7 +261,7 @@ export function usePictureInPicture() {
           <div style="background: #0a0a0a; border: 0.5px solid rgba(26, 26, 26, 0.5); border-radius: 0 0 3px 3px; padding: 0; font-size: 0.85rem; color: #888;">
             <div id="pip-drawer-header" style="margin: 0; padding: 0.4rem 0; border-bottom: 0.5px solid rgba(26, 26, 26, 0.5); display: flex; align-items: center; gap: 0; background: #0a0a0a; justify-content: flex-end; position: relative; min-height: 32px;">
               <div id="pip-notes-wrapper" style="flex: 1; position: relative; margin-right: auto; visibility: hidden; opacity: 0; height: 0; overflow: hidden;">
-                <input type="text" id="pip-notes-input" placeholder="Notes" style="width: 100%; padding: 0.3rem 2rem 0.3rem 0.5rem; border: 1px solid #888; border-radius: 3px; font-size: 0.85rem; background: #1a1a1a; color: #ffffff; outline: none;" />
+                <input type="text" id="pip-notes-input" placeholder="Notes" style="width: 100%; padding: 0.3rem 2rem 0.3rem 0.5rem; border: 1px solid #ccc; border-radius: 3px; font-size: 0.85rem; background: #1a1a1a; color: #ffffff; outline: none;" />
                 <button id="pip-notes-save" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; padding: 0; background: #2a2a2a; border: 0.5px solid rgba(42, 42, 42, 0.8); border-radius: 50%; cursor: pointer; font-size: 0.65rem; display: flex; align-items: center; justify-content: center; color: #888;">
                   <i class="pi pi-save"></i>
                 </button>
@@ -401,12 +401,12 @@ export function usePictureInPicture() {
               return `
               <div style="background: #151515; border: 0.5px solid rgba(42, 42, 42, 0.5); border-radius: 3px; padding: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <div style="display: flex; gap: 0.6rem; align-items: center;">
+                  <div style="display: flex; gap: 0.6rem; align-items: center; flex: 1;">
                     <span style="font-family: monospace; color: #fff; font-size: 0.95rem; min-width: 45px;">${st.time}</span>
-                    ${st.notes ? `<button id="pip-toggle-notes-${st.id}" style="background: transparent; border: 1px solid transparent; color: #888; padding: 0.2rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem;"><i class="pi ${isExpanded ? 'pi-eye-slash' : 'pi-eye'}"></i></button>` : ''}
                   </div>
-                  <div style="display: flex; gap: 0.3rem;">
-                    <button style="background: transparent; border: 1px solid transparent; color: #888; padding: 0.2rem; border-radius: 4px; cursor: pointer;" onclick="navigator.clipboard.writeText(JSON.stringify({time: '${st.time}', notes: '${st.notes}'}, null, 2))">
+                  <div style="display: flex; gap: 0.3rem; align-items: center;">
+                    ${st.notes ? `<button id="pip-toggle-notes-${st.id}" style="background: transparent; border: 1px solid transparent; color: #ccc; padding: 0.2rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem;"><i class="pi ${isExpanded ? 'pi-eye-slash' : 'pi-eye'}"></i></button>` : ''}
+                    <button style="background: transparent; border: 1px solid transparent; color: #ccc; padding: 0.2rem; border-radius: 4px; cursor: pointer;" onclick="navigator.clipboard.writeText(JSON.stringify({time: '${st.time}', notes: '${st.notes}'}, null, 2))">
                       <i class="pi pi-download"></i>
                     </button>
                     <button style="background: transparent; border: 1px solid transparent; color: #cc4444; padding: 0.2rem; border-radius: 4px; cursor: pointer;" onclick="window.dispatchEvent(new CustomEvent('pip-delete-time', {detail: '${st.id}'}))">
@@ -414,7 +414,7 @@ export function usePictureInPicture() {
                     </button>
                   </div>
                 </div>
-                ${st.notes && isExpanded ? `<div style="margin-top: 0.4rem; padding: 0.4rem; border-top: 1px solid #888; background: #1a1a1a; color: #ffffff; font-size: 0.85rem; border-radius: 0 0 3px 3px;">${st.notes}</div>` : ''}
+                ${st.notes && isExpanded ? `<div style="margin-top: 0.4rem; padding: 0.4rem; border-top: 1px solid #ccc; background: #1a1a1a; color: #ffffff; font-size: 0.85rem; border-radius: 0 0 3px 3px;">${st.notes}</div>` : ''}
               </div>
             `
             }).join('')
