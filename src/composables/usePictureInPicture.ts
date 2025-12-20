@@ -323,7 +323,7 @@ export function usePictureInPicture() {
         
         if (deleteAllBtn) {
           deleteAllBtn.addEventListener('click', () => {
-            if (timerStore.savedTimes.length > 0 && !deleteAllBtn.hasAttribute('disabled') && confirm('Delete all saved times?')) {
+            if (timerStore.savedTimes.length > 0 && !deleteAllBtn.hasAttribute('disabled')) {
               timerStore.deleteAllSavedTimes()
             }
             showGlobeMenu = false
