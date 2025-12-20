@@ -337,11 +337,11 @@ const visibleSavedTimes = computed(() =>
 
 .notes-input {
   padding: 0.3rem 2.5rem 0.3rem 0.5rem;
-  border: 0.5px solid rgba(42, 42, 42, 0.5);
+  border: 1px solid #888;
   border-radius: 3px;
   font-size: 0.85rem;
-  background: #3b3b3b;
-  color: #0a0a0a;
+  background: #1a1a1a;
+  color: #ffffff;
   width: 100%;
   transition: all 0.15s ease;
 }
@@ -489,9 +489,9 @@ const visibleSavedTimes = computed(() =>
 .saved-time-notes {
   margin-top: 0.4rem;
   padding: 0.4rem;
-  border-top: 0.5px solid rgba(42, 42, 42, 0.5);
-  background: #3b3b3b;
-  color: #0a0a0a;
+  border-top: 1px solid #888;
+  background: #1a1a1a;
+  color: #ffffff;
   font-size: 0.85rem;
   border-radius: 0 0 3px 3px;
 }

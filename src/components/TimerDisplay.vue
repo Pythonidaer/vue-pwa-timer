@@ -56,7 +56,7 @@ function toggleDrawer() {
   <!-- If PiP is supported, show only the "Open Timer" button -->
   <div v-if="isSupported && !isPiPOpen" class="pip-launch-container">
     <button class="btn-launch-pip" @click="openPiP">
-      <i class="pi pi-play"></i>
+      <i class="pi pi-external-link"></i>
       <span>Open Timer</span>
     </button>
   </div>

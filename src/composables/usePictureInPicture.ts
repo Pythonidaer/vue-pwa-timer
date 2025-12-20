@@ -231,7 +231,10 @@ export function usePictureInPicture() {
             const notesWrapper = pipDoc.getElementById('pip-notes-wrapper')
             const notesInput = pipDoc.getElementById('pip-notes-input') as HTMLInputElement
             if (notesWrapper && notesInput) {
-              notesWrapper.style.display = 'flex'
+              notesWrapper.style.visibility = 'visible'
+              notesWrapper.style.opacity = '1'
+              notesWrapper.style.height = 'auto'
+              notesWrapper.style.overflow = 'visible'
               setTimeout(() => notesInput.focus(), 100)
             }
           }
@@ -256,9 +259,9 @@ export function usePictureInPicture() {
         drawerContainer.style.display = 'block'
         drawerContainer.innerHTML = `
           <div style="background: #0a0a0a; border: 0.5px solid rgba(26, 26, 26, 0.5); border-radius: 0 0 3px 3px; padding: 0; font-size: 0.85rem; color: #888;">
-            <div id="pip-drawer-header" style="margin: 0; padding: 0.4rem 0; border-bottom: 0.5px solid rgba(26, 26, 26, 0.5); display: flex; align-items: center; gap: 0; background: #0a0a0a; justify-content: flex-end; position: relative;">
-              <div id="pip-notes-wrapper" style="display: none; flex: 1; position: relative; margin-right: auto;">
-                <input type="text" id="pip-notes-input" placeholder="Notes" style="width: 100%; padding: 0.3rem 2rem 0.3rem 0.5rem; border: 0.5px solid rgba(42, 42, 42, 0.5); border-radius: 3px; font-size: 0.85rem; background: #3b3b3b; color: #0a0a0a; outline: none;" />
+            <div id="pip-drawer-header" style="margin: 0; padding: 0.4rem 0; border-bottom: 0.5px solid rgba(26, 26, 26, 0.5); display: flex; align-items: center; gap: 0; background: #0a0a0a; justify-content: flex-end; position: relative; min-height: 32px;">
+              <div id="pip-notes-wrapper" style="flex: 1; position: relative; margin-right: auto; visibility: hidden; opacity: 0; height: 0; overflow: hidden;">
+                <input type="text" id="pip-notes-input" placeholder="Notes" style="width: 100%; padding: 0.3rem 2rem 0.3rem 0.5rem; border: 1px solid #888; border-radius: 3px; font-size: 0.85rem; background: #1a1a1a; color: #ffffff; outline: none;" />
                 <button id="pip-notes-save" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; padding: 0; background: #2a2a2a; border: 0.5px solid rgba(42, 42, 42, 0.8); border-radius: 50%; cursor: pointer; font-size: 0.65rem; display: flex; align-items: center; justify-content: center; color: #888;">
                   <i class="pi pi-save"></i>
                 </button>
@@ -354,7 +357,10 @@ export function usePictureInPicture() {
               timerStore.saveTime(notesInput.value || '')
               notesInput.value = ''
               if (notesWrapper) {
-                notesWrapper.style.display = 'none'
+                notesWrapper.style.visibility = 'hidden'
+                notesWrapper.style.opacity = '0'
+                notesWrapper.style.height = '0'
+                notesWrapper.style.overflow = 'hidden'
               }
               updateSavedTimes()
             }
@@ -365,7 +371,10 @@ export function usePictureInPicture() {
           notesCancelBtn.addEventListener('click', () => {
             notesInput.value = ''
             if (notesWrapper) {
-              notesWrapper.style.display = 'none'
+              notesWrapper.style.visibility = 'hidden'
+              notesWrapper.style.opacity = '0'
+              notesWrapper.style.height = '0'
+              notesWrapper.style.overflow = 'hidden'
             }
           })
         }
@@ -405,7 +414,7 @@ export function usePictureInPicture() {
                     </button>
                   </div>
                 </div>
-                ${st.notes && isExpanded ? `<div style="margin-top: 0.4rem; padding: 0.4rem; border-top: 0.5px solid rgba(42, 42, 42, 0.5); background: #3b3b3b; color: #0a0a0a; font-size: 0.85rem; border-radius: 0 0 3px 3px;">${st.notes}</div>` : ''}
+                ${st.notes && isExpanded ? `<div style="margin-top: 0.4rem; padding: 0.4rem; border-top: 1px solid #888; background: #1a1a1a; color: #ffffff; font-size: 0.85rem; border-radius: 0 0 3px 3px;">${st.notes}</div>` : ''}
               </div>
             `
             }).join('')
