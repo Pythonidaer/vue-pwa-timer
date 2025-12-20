@@ -22,10 +22,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install and build from workspace
-        working-directory: apps/web
+      - name: Clean and install in workspace
         run: |
+          rm -rf node_modules package-lock.json
+          cd apps/web
+          rm -rf node_modules package-lock.json
           npm install
+          # Explicitly install Rollup optional dependency for Linux
+          npm install @rollup/rollup-linux-x64-gnu --save-optional || npm install @rollup/rollup-linux-x64-gnu --no-save
           npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
