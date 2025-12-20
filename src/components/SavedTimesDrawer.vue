@@ -101,7 +101,7 @@ const visibleSavedTimes = computed(() =>
         
         <!-- Globe Menu Button -->
         <button 
-          class="btn-header"
+          class="btn-header btn-globe"
           @click="toggleMenu"
           aria-label="Menu"
         >
@@ -324,7 +324,7 @@ const visibleSavedTimes = computed(() =>
   display: flex;
   align-items: center;
   flex: 1;
-  margin-right: 0.4rem;
+  margin-right: auto;
 }
 
 .notes-input-wrapper {
@@ -340,8 +340,8 @@ const visibleSavedTimes = computed(() =>
   border: 0.5px solid rgba(42, 42, 42, 0.5);
   border-radius: 3px;
   font-size: 0.85rem;
-  background: #1a1a1a;
-  color: white;
+  background: #3b3b3b;
+  color: #0a0a0a;
   width: 100%;
   transition: all 0.15s ease;
 }
@@ -488,11 +488,11 @@ const visibleSavedTimes = computed(() =>
 
 .saved-time-notes {
   margin-top: 0.4rem;
-  padding-top: 0.4rem;
-  border-top: 1px solid #2a2a2a;
-  color: #ffeb3b;
-  font-style: italic;
+  padding: 0.4rem;
+  border-top: 0.5px solid rgba(42, 42, 42, 0.5);
+  background: #3b3b3b;
+  color: #0a0a0a;
   font-size: 0.85rem;
-  text-shadow: 0 0 2px rgba(255, 235, 59, 0.3);
+  border-radius: 0 0 3px 3px;
 }
 </style>
