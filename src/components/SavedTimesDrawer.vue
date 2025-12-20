@@ -58,13 +58,6 @@ onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
 })
 
-function formatDate(date: Date): string {
-  return date.toLocaleDateString('en-US', {
-    month: '2-digit',
-    day: '2-digit',
-    year: '2-digit'
-  })
-}
 
 const visibleSavedTimes = computed(() => 
   timerStore.savedTimes
@@ -152,7 +145,6 @@ const visibleSavedTimes = computed(() =>
       >
         <div class="saved-time-main">
           <div class="saved-time-info">
-            <span class="date">{{ formatDate(savedTime.date) }}</span>
             <span class="time">{{ savedTime.time }}</span>
             <button
               v-if="savedTime.notes"
@@ -420,13 +412,6 @@ const visibleSavedTimes = computed(() =>
   align-items: center;
   gap: 0.6rem;
   flex: 1;
-}
-
-.date {
-  font-weight: 500;
-  color: #888;
-  min-width: 65px;
-  font-size: 0.85rem;
 }
 
 .time {

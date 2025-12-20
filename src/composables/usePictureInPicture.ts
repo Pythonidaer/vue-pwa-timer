@@ -243,22 +243,22 @@ export function usePictureInPicture() {
         drawerIcon.className = 'pi pi-chevron-up'
         drawerContainer.style.display = 'block'
         drawerContainer.innerHTML = `
-          <div style="background: #0a0a0a; border: 0.5px solid rgba(26, 26, 26, 0.5); border-radius: 0 0 3px 3px; padding: 0.75rem; font-size: 0.85rem; color: #888;">
-            <div id="pip-drawer-header" style="margin-bottom: 0.5rem; padding-bottom: 0.3rem; border-bottom: 0.5px solid rgba(26, 26, 26, 0.5); display: flex; align-items: center; gap: 0.4rem; background: #1a1a1a; padding: 0.5rem; border-radius: 3px;">
-              <div id="pip-notes-wrapper" style="display: none; flex: 1; position: relative;">
-                <input type="text" id="pip-notes-input" placeholder="Notes" style="width: 100%; padding: 0.3rem 2.5rem 0.3rem 0.5rem; border: 0.5px solid rgba(42, 42, 42, 0.5); border-radius: 3px; font-size: 0.85rem; background: #0a0a0a; color: white; outline: none;" />
-                <button id="pip-notes-save" style="position: absolute; right: 24px; top: 50%; transform: translateY(-50%); padding: 0.2rem; min-width: 20px; height: 20px; background: transparent; border: 1px solid transparent; color: #888; border-radius: 4px; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center;">
+          <div style="background: #0a0a0a; border: 0.5px solid rgba(26, 26, 26, 0.5); border-radius: 0 0 3px 3px; padding: 0; font-size: 0.85rem; color: #888;">
+            <div id="pip-drawer-header" style="margin: 0; padding: 0.4rem 0.5rem; border-bottom: 0.5px solid rgba(26, 26, 26, 0.5); display: flex; align-items: center; gap: 0.4rem; background: #0a0a0a; justify-content: space-between;">
+              <div id="pip-notes-wrapper" style="display: none; flex: 1; position: relative; margin-right: 0.4rem;">
+                <input type="text" id="pip-notes-input" placeholder="Notes" style="width: 100%; padding: 0.3rem 2rem 0.3rem 0.5rem; border: 0.5px solid rgba(42, 42, 42, 0.5); border-radius: 3px; font-size: 0.85rem; background: #1a1a1a; color: white; outline: none;" />
+                <button id="pip-notes-save" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; padding: 0; background: #2a2a2a; border: 0.5px solid rgba(42, 42, 42, 0.8); border-radius: 50%; cursor: pointer; font-size: 0.65rem; display: flex; align-items: center; justify-content: center; color: #888;">
                   <i class="pi pi-save"></i>
                 </button>
-                <button id="pip-notes-cancel" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); padding: 0.2rem; min-width: 20px; height: 20px; background: transparent; border: 1px solid transparent; color: #888; border-radius: 4px; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center;">
+                <button id="pip-notes-cancel" style="position: absolute; right: 2px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; padding: 0; background: #2a2a2a; border: 0.5px solid rgba(42, 42, 42, 0.8); border-radius: 50%; cursor: pointer; font-size: 0.65rem; display: flex; align-items: center; justify-content: center; color: #888;">
                   <i class="pi pi-times"></i>
                 </button>
               </div>
-              <button id="pip-globe" style="background: transparent; border: 1px solid transparent; color: #888; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; min-width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">
+              <button id="pip-globe" style="background: transparent; border: 1px solid transparent; color: #888; padding: 0.2rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; min-width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                 <i class="pi pi-globe"></i>
               </button>
             </div>
-            <div id="pip-saved-times" style="display: flex; flex-direction: column; gap: ${timerStore.viewMode === 'compact' ? '0.25rem' : '0.6rem'};">
+            <div id="pip-saved-times" style="display: flex; flex-direction: column; gap: ${timerStore.viewMode === 'compact' ? '0.25rem' : '0.6rem'}; padding: 0.75rem;">
             </div>
           </div>
         `
@@ -325,12 +325,11 @@ export function usePictureInPicture() {
               <div style="background: #1a1a1a; border: 0.5px solid rgba(42, 42, 42, 0.5); border-radius: 3px; padding: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                   <div style="display: flex; gap: 0.6rem; align-items: center;">
-                    <span style="color: #888; font-size: 0.85rem; min-width: 65px;">${st.date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' })}</span>
                     <span style="font-family: monospace; color: #fff; font-size: 0.95rem; min-width: 45px;">${st.time}</span>
                     ${st.notes ? `<button id="pip-toggle-notes-${st.id}" style="background: transparent; border: 1px solid transparent; color: #888; padding: 0.2rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem;"><i class="pi ${isExpanded ? 'pi-eye-slash' : 'pi-eye'}"></i></button>` : ''}
                   </div>
                   <div style="display: flex; gap: 0.3rem;">
-                    <button style="background: transparent; border: 1px solid transparent; color: #888; padding: 0.2rem; border-radius: 4px; cursor: pointer;" onclick="navigator.clipboard.writeText(JSON.stringify({date: '${st.date.toLocaleDateString()}', time: '${st.time}', notes: '${st.notes}'}, null, 2))">
+                    <button style="background: transparent; border: 1px solid transparent; color: #888; padding: 0.2rem; border-radius: 4px; cursor: pointer;" onclick="navigator.clipboard.writeText(JSON.stringify({time: '${st.time}', notes: '${st.notes}'}, null, 2))">
                       <i class="pi pi-download"></i>
                     </button>
                     <button style="background: transparent; border: 1px solid transparent; color: #cc4444; padding: 0.2rem; border-radius: 4px; cursor: pointer;" onclick="window.dispatchEvent(new CustomEvent('pip-delete-time', {detail: '${st.id}'}))">

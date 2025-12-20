@@ -108,11 +108,6 @@ export const useTimerStore = defineStore('timer', () => {
     if (!savedTime) return
     
     const data = {
-      date: savedTime.date.toLocaleDateString('en-US', { 
-        month: '2-digit', 
-        day: '2-digit', 
-        year: '2-digit' 
-      }),
       time: savedTime.time,
       notes: savedTime.notes
     }
@@ -129,11 +124,6 @@ export const useTimerStore = defineStore('timer', () => {
   // Export all saved times
   function exportAllSavedTimes() {
     const data = savedTimes.value.map(st => ({
-      date: st.date.toLocaleDateString('en-US', { 
-        month: '2-digit', 
-        day: '2-digit', 
-        year: '2-digit' 
-      }),
       time: st.time,
       notes: st.notes
     }))
