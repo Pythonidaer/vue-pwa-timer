@@ -2,7 +2,7 @@ import { ref, watch } from 'vue'
 import { useTimerStore } from '@/stores/timer'
 
 export function usePictureInPicture() {
-      const pipWindow = ref<Window | null>(null)
+  const pipWindow = ref<Window | null>(null)
   const isPiPOpen = ref(false)
   const timerStore = useTimerStore()
 
@@ -17,7 +17,7 @@ export function usePictureInPicture() {
       const pip = (window as any).documentPictureInPicture
       const newWindow = await pip.requestWindow({
         width: 280,
-        height: 120,
+        height: 200, // Increased to accommodate drawer
       })
 
       pipWindow.value = newWindow
@@ -52,7 +52,7 @@ export function usePictureInPicture() {
               background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
               border-radius: 4px;
               width: 100%;
-              height: 100%;
+              min-height: 100%;
             }
             .pip-timer-panel {
               display: flex;
@@ -148,6 +148,9 @@ export function usePictureInPicture() {
                 </div>
               </div>
             </div>
+            <div id="pip-drawer-container" style="display: none; width: 100%; margin-top: 0.2rem;">
+              <!-- Drawer will be rendered here when opened -->
+            </div>
           </div>
         </body>
       `
@@ -219,22 +222,95 @@ export function usePictureInPicture() {
         })
       }
 
-      if (drawerBtn && drawerIcon) {
-        let pipDrawerOpen = false
+      const drawerContainer = pipDoc.getElementById('pip-drawer-container')
+      let pipDrawerOpen = false
+      
+      if (drawerBtn && drawerIcon && drawerContainer) {
         drawerBtn.addEventListener('click', () => {
-          // Toggle drawer in main window by dispatching a custom event
-          window.dispatchEvent(new CustomEvent('pip-toggle-drawer'))
           pipDrawerOpen = !pipDrawerOpen
           drawerIcon.className = pipDrawerOpen ? 'pi pi-chevron-up' : 'pi pi-chevron-down'
+          
+          if (pipDrawerOpen) {
+            // Show drawer in PiP window
+            drawerContainer.style.display = 'block'
+            // Create a simple drawer content (you can enhance this later)
+            drawerContainer.innerHTML = `
+              <div style="background: #0a0a0a; border: 0.5px solid rgba(26, 26, 26, 0.5); border-radius: 0 0 3px 3px; padding: 0.75rem; font-size: 0.85rem; color: #888;">
+                <div style="margin-bottom: 0.5rem; padding-bottom: 0.3rem; border-bottom: 0.5px solid rgba(26, 26, 26, 0.5);">
+                  <button id="pip-globe" style="background: transparent; border: 1px solid transparent; color: #888; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">
+                    <i class="pi pi-globe"></i>
+                  </button>
+                </div>
+                <div id="pip-saved-times" style="display: flex; flex-direction: column; gap: 0.4rem;">
+                  ${timerStore.savedTimes.length === 0 ? '<div style="color: #666; text-align: center; padding: 1rem;">No saved times yet</div>' : ''}
+                </div>
+              </div>
+            `
+            // Update saved times list
+            updateSavedTimes()
+          } else {
+            drawerContainer.style.display = 'none'
+          }
         })
       }
+      
+      function updateSavedTimes() {
+        const savedTimesContainer = pipDoc.getElementById('pip-saved-times')
+        if (savedTimesContainer && pipDrawerOpen) {
+          if (timerStore.savedTimes.length === 0) {
+            savedTimesContainer.innerHTML = '<div style="color: #666; text-align: center; padding: 1rem;">No saved times yet</div>'
+          } else {
+            savedTimesContainer.innerHTML = timerStore.savedTimes.map(st => `
+              <div style="background: #1a1a1a; border: 0.5px solid rgba(42, 42, 42, 0.5); border-radius: 3px; padding: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; gap: 0.6rem; align-items: center;">
+                  <span style="color: #888; font-size: 0.85rem; min-width: 65px;">${st.date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' })}</span>
+                  <span style="font-family: monospace; color: #fff; font-size: 0.95rem; min-width: 45px;">${st.time}</span>
+                </div>
+                <div style="display: flex; gap: 0.3rem;">
+                  <button style="background: transparent; border: 1px solid transparent; color: #888; padding: 0.2rem; border-radius: 4px; cursor: pointer;" onclick="navigator.clipboard.writeText(JSON.stringify({date: '${st.date.toLocaleDateString()}', time: '${st.time}', notes: '${st.notes}'}, null, 2))">
+                    <i class="pi pi-download"></i>
+                  </button>
+                  <button style="background: transparent; border: 1px solid transparent; color: #cc4444; padding: 0.2rem; border-radius: 4px; cursor: pointer;" onclick="window.dispatchEvent(new CustomEvent('pip-delete-time', {detail: '${st.id}'}))">
+                    <i class="pi pi-trash"></i>
+                  </button>
+                </div>
+              </div>
+            `).join('')
+          }
+        }
+      }
+      
+      // Watch for saved times changes
+      const savedTimesWatcher = watch(
+        () => timerStore.savedTimes,
+        () => {
+          updateSavedTimes()
+        },
+        { deep: true }
+      )
+      
+      // Listen for delete events
+      window.addEventListener('pip-delete-time', ((e: CustomEvent) => {
+        timerStore.deleteSavedTime(e.detail)
+      }) as EventListener)
+      
+      // Clean up saved times watcher
+      newWindow.addEventListener('pagehide', () => {
+        savedTimesWatcher()
+      })
 
       // Clean up when window closes
       newWindow.addEventListener('pagehide', () => {
         stopWatcher()
+        savedTimesWatcher()
         pipWindow.value = null
         isPiPOpen.value = false
+        // Dispatch event to show main window content again
+        window.dispatchEvent(new CustomEvent('pip-closed'))
       })
+      
+      // Dispatch event to hide main window content
+      window.dispatchEvent(new CustomEvent('pip-opened'))
 
       // Initial update
       updateTime()
@@ -250,6 +326,8 @@ export function usePictureInPicture() {
       pipWindow.value.close()
       pipWindow.value = null
       isPiPOpen.value = false
+      // Dispatch event to show main window content again
+      window.dispatchEvent(new CustomEvent('pip-closed'))
     }
   }
 

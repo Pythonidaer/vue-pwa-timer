@@ -9,10 +9,15 @@ const notesInput = ref('')
 const showNotesInput = ref(false)
 const showDrawer = ref(false)
 const { openPiP, isPiPOpen, isSupported } = usePictureInPicture()
+const showMainContent = ref(true)
 
-// Listen for PiP drawer toggle events
-window.addEventListener('pip-toggle-drawer', () => {
-  toggleDrawer()
+// Listen for PiP events to hide/show main content
+window.addEventListener('pip-opened', () => {
+  showMainContent.value = false
+})
+
+window.addEventListener('pip-closed', () => {
+  showMainContent.value = true
 })
 
 function handleStart() {
@@ -48,7 +53,7 @@ function toggleDrawer() {
 </script>
 
 <template>
-  <div class="timer-container">
+  <div v-if="showMainContent || !isSupported" class="timer-container">
     <!-- Timer Panel -->
     <div class="timer-panel" style="position: relative;">
       <!-- Digital Display -->
@@ -98,11 +103,11 @@ function toggleDrawer() {
       
       <!-- Picture-in-Picture Button -->
       <button
-        v-if="isSupported"
+        v-if="isSupported && !isPiPOpen"
         class="btn-pip"
         @click="openPiP"
-        :aria-label="isPiPOpen ? 'Picture-in-Picture is open' : 'Open in Picture-in-Picture'"
-        :title="isPiPOpen ? 'Picture-in-Picture is open' : 'Open in small floating window'"
+        aria-label="Open in Picture-in-Picture"
+        title="Open in small floating window"
       >
         <i class="pi pi-window-maximize"></i>
       </button>
@@ -119,6 +124,12 @@ function toggleDrawer() {
         @cancel="showNotesInput = false"
       />
     </transition>
+  </div>
+  
+  <!-- Show message when PiP is open -->
+  <div v-else-if="isPiPOpen && isSupported" class="pip-message">
+    <p>Timer is running in Picture-in-Picture window</p>
+    <p class="pip-message-small">Close the PiP window to return here</p>
   </div>
 </template>
 
@@ -337,5 +348,25 @@ function toggleDrawer() {
 
 .btn-pip i {
   font-size: 0.7rem;
+}
+
+.pip-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  color: #888;
+}
+
+.pip-message p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+
+.pip-message-small {
+  font-size: 0.85rem;
+  color: #666;
 }
 </style>
