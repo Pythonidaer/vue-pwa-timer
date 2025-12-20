@@ -10,6 +10,11 @@ const showNotesInput = ref(false)
 const showDrawer = ref(false)
 const { openPiP, isPiPOpen, isSupported } = usePictureInPicture()
 
+// Listen for PiP drawer toggle events
+window.addEventListener('pip-toggle-drawer', () => {
+  toggleDrawer()
+})
+
 function handleStart() {
   if (timerStore.isRunning) {
     timerStore.pause()

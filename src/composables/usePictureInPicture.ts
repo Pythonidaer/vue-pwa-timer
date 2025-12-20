@@ -2,7 +2,7 @@ import { ref, watch } from 'vue'
 import { useTimerStore } from '@/stores/timer'
 
 export function usePictureInPicture() {
-  const pipWindow = ref<Window | null>(null)
+      const pipWindow = ref<Window | null>(null)
   const isPiPOpen = ref(false)
   const timerStore = useTimerStore()
 
@@ -82,6 +82,11 @@ export function usePictureInPicture() {
               gap: 0.25rem;
               flex-shrink: 0;
             }
+            .pip-button-column {
+              display: flex;
+              flex-direction: column;
+              gap: 0.25rem;
+            }
             .pip-btn {
               width: 24px;
               height: 24px;
@@ -107,6 +112,9 @@ export function usePictureInPicture() {
             .pip-btn-purple {
               background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%);
             }
+            .pip-btn-drawer {
+              background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            }
             .pip-btn:hover {
               opacity: 0.9;
             }
@@ -122,15 +130,22 @@ export function usePictureInPicture() {
                 <span class="pip-time-digits" id="pip-time">00:00</span>
               </div>
               <div class="pip-controls">
-                <button class="pip-btn" id="pip-play-pause" aria-label="Play/Pause">
-                  <i class="pi pi-play"></i>
-                </button>
-                <button class="pip-btn pip-btn-blue" id="pip-save" aria-label="Save">
-                  <i class="pi pi-save"></i>
-                </button>
-                <button class="pip-btn pip-btn-purple" id="pip-reset" aria-label="Reset">
-                  <i class="pi pi-refresh"></i>
-                </button>
+                <div class="pip-button-column">
+                  <button class="pip-btn" id="pip-play-pause" aria-label="Play/Pause">
+                    <i class="pi pi-play"></i>
+                  </button>
+                  <button class="pip-btn pip-btn-blue" id="pip-save" aria-label="Save">
+                    <i class="pi pi-save"></i>
+                  </button>
+                </div>
+                <div class="pip-button-column">
+                  <button class="pip-btn pip-btn-purple" id="pip-reset" aria-label="Reset">
+                    <i class="pi pi-refresh"></i>
+                  </button>
+                  <button class="pip-btn pip-btn-drawer" id="pip-drawer" aria-label="Toggle drawer">
+                    <i class="pi pi-chevron-down" id="pip-drawer-icon"></i>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -148,6 +163,8 @@ export function usePictureInPicture() {
       const playPauseBtn = pipDoc.getElementById('pip-play-pause')
       const saveBtn = pipDoc.getElementById('pip-save')
       const resetBtn = pipDoc.getElementById('pip-reset')
+      const drawerBtn = pipDoc.getElementById('pip-drawer')
+      const drawerIcon = pipDoc.getElementById('pip-drawer-icon')
 
       // Update time display
       function updateTime() {
@@ -199,6 +216,16 @@ export function usePictureInPicture() {
       if (resetBtn) {
         resetBtn.addEventListener('click', () => {
           timerStore.reset()
+        })
+      }
+
+      if (drawerBtn && drawerIcon) {
+        let pipDrawerOpen = false
+        drawerBtn.addEventListener('click', () => {
+          // Toggle drawer in main window by dispatching a custom event
+          window.dispatchEvent(new CustomEvent('pip-toggle-drawer'))
+          pipDrawerOpen = !pipDrawerOpen
+          drawerIcon.className = pipDrawerOpen ? 'pi pi-chevron-up' : 'pi pi-chevron-down'
         })
       }
 
