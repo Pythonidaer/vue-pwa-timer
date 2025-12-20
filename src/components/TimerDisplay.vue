@@ -326,7 +326,7 @@ function toggleDrawer() {
   justify-content: center;
   min-height: 50vh;
   padding: 2rem;
-  background: #0d0d0d;
+  background: transparent;
 }
 
 .btn-launch-pip {
@@ -380,6 +380,7 @@ function toggleDrawer() {
   text-align: center;
   color: #888;
   min-height: 50vh;
+  background: transparent;
 }
 
 .pip-message p {
