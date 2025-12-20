@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { defineStore } from 'pinia'
 
 export interface SavedTime {
@@ -18,9 +18,40 @@ export const useTimerStore = defineStore('timer', () => {
   const totalSeconds = ref(0) // Total elapsed time in seconds
   const intervalId = ref<number | null>(null)
   
+  // Load saved times from localStorage
+  function loadSavedTimes(): SavedTime[] {
+    try {
+      const stored = localStorage.getItem('timer-saved-times')
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        return parsed.map((st: any) => ({
+          ...st,
+          date: new Date(st.date)
+        }))
+      }
+    } catch (e) {
+      console.error('Failed to load saved times:', e)
+    }
+    return []
+  }
+  
+  // Save times to localStorage
+  function saveToLocalStorage() {
+    try {
+      localStorage.setItem('timer-saved-times', JSON.stringify(savedTimes.value))
+    } catch (e) {
+      console.error('Failed to save times:', e)
+    }
+  }
+  
   // Saved times
-  const savedTimes = ref<SavedTime[]>([])
+  const savedTimes = ref<SavedTime[]>(loadSavedTimes())
   const viewMode = ref<ViewMode>('compact')
+  
+  // Watch for changes and save to localStorage
+  watch(savedTimes, () => {
+    saveToLocalStorage()
+  }, { deep: true })
   
   // Computed: Format time as MM:SS
   const formattedTime = computed(() => {

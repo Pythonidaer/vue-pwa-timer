@@ -14,30 +14,10 @@ const showMainContent = ref(true)
 // Listen for PiP events to hide/show main content
 window.addEventListener('pip-opened', () => {
   showMainContent.value = false
-  // Try to minimize or hide the main window
-  window.blur()
-  // Try experimental minimize if available
-  if ((window as any).minimize) {
-    try {
-      (window as any).minimize()
-    } catch (e) {
-      // Not available
-    }
-  }
-  // For PWAs, try additional methods
-  if (window.matchMedia('(display-mode: standalone)').matches) {
-    // Request to minimize (may not work on all platforms)
-    try {
-      window.blur()
-    } catch (e) {
-      // Ignore
-    }
-  }
 })
 
 window.addEventListener('pip-closed', () => {
   showMainContent.value = true
-  window.focus()
 })
 
 function handleStart() {
@@ -82,10 +62,10 @@ function toggleDrawer() {
   </div>
   
   <!-- If PiP is open, show message -->
-  <div v-else-if="isPiPOpen && isSupported" class="pip-message">
-    <p>Timer is running in Picture-in-Picture window</p>
-    <p class="pip-message-small">Close the PiP window to return here</p>
-  </div>
+        <div v-else-if="isPiPOpen && isSupported" class="pip-message">
+          <p>Timer is running in Picture-in-Picture window</p>
+          <p class="pip-message-small">You are safe to minimize this window</p>
+        </div>
   
   <!-- If PiP is NOT supported, show normal timer -->
   <div v-else class="timer-container">
