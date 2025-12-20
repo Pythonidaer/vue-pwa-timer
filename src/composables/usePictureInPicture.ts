@@ -160,7 +160,7 @@ export function usePictureInPicture() {
                 </div>
               </div>
             </div>
-            <div id="pip-drawer-container" style="display: none; width: 100%; margin-top: 0.2rem; max-height: 300px; overflow-y: auto;">
+            <div id="pip-drawer-container" style="display: none; width: 100%; margin-top: 0.2rem; max-height: 300px; overflow-y: auto; overflow-x: visible; position: relative;">
               <!-- Drawer will be rendered here when opened -->
             </div>
           </div>
@@ -258,8 +258,8 @@ export function usePictureInPicture() {
         drawerIcon.className = 'pi pi-chevron-up'
         drawerContainer.style.display = 'block'
         drawerContainer.innerHTML = `
-          <div style="background: #0a0a0a; border: 0.5px solid rgba(26, 26, 26, 0.5); border-radius: 0 0 3px 3px; padding: 0; font-size: 0.85rem; color: #888;">
-            <div id="pip-drawer-header" style="margin: 0; padding: 0.4rem 0; border-bottom: 0.5px solid rgba(26, 26, 26, 0.5); display: flex; align-items: center; gap: 0; background: #0a0a0a; justify-content: flex-end; position: relative; min-height: 32px;">
+          <div style="background: #0a0a0a; border: 0.5px solid rgba(26, 26, 26, 0.5); border-radius: 0 0 3px 3px; padding: 0; font-size: 0.85rem; color: #888; position: relative; overflow: visible;">
+            <div id="pip-drawer-header" style="margin: 0; padding: 0.4rem 0; border-bottom: 0.5px solid rgba(26, 26, 26, 0.5); display: flex; align-items: center; gap: 0; background: #0a0a0a; justify-content: flex-end; position: relative; min-height: 32px; z-index: 1; overflow: visible;">
               <div id="pip-notes-wrapper" style="flex: 1; position: relative; margin-right: auto; visibility: hidden; opacity: 0; height: 0; overflow: hidden;">
                 <input type="text" id="pip-notes-input" placeholder="Notes" style="width: 100%; padding: 0.3rem 2rem 0.3rem 0.5rem; border: 1px solid #ccc; border-radius: 3px; font-size: 0.85rem; background: #1a1a1a; color: #ffffff; outline: none;" />
                 <button id="pip-notes-save" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; padding: 0; background: #2a2a2a; border: 0.5px solid rgba(42, 42, 42, 0.8); border-radius: 50%; cursor: pointer; font-size: 0.65rem; display: flex; align-items: center; justify-content: center; color: #888;">
@@ -269,10 +269,10 @@ export function usePictureInPicture() {
                   <i class="pi pi-times"></i>
                 </button>
               </div>
-              <button id="pip-globe" style="background: transparent; border: 1px solid transparent; color: #888; padding: 0.2rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; min-width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-left: auto;">
+              <button id="pip-globe" style="background: transparent; border: 1px solid transparent; color: #888; padding: 0.2rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; min-width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-left: auto; position: relative; z-index: 2;">
                 <i class="pi pi-globe"></i>
               </button>
-              <div id="pip-globe-menu" style="display: none; position: absolute; top: 100%; right: 0; margin-top: 0.25rem; background: #1a1a1a; border: 0.25px solid #2a2a2a; border-radius: 4px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); flex-direction: column; min-width: 120px; width: 100%; max-width: 260px; z-index: 1000; overflow: hidden;">
+              <div id="pip-globe-menu" style="display: none; position: fixed; background: #1a1a1a; border: 0.25px solid #2a2a2a; border-radius: 4px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); flex-direction: column; min-width: 120px; z-index: 10000; overflow: visible;">
                 <button id="pip-menu-export-all" class="pip-menu-item" style="background: none; border: none; color: #ccc; cursor: pointer; font-size: 0.85rem; padding: 0.5rem 0.75rem; text-align: left; transition: all 0.15s ease; border-bottom: 0.25px solid #2a2a2a; ${timerStore.savedTimes.length === 0 ? 'opacity: 0.3; cursor: not-allowed;' : ''}">
                   Export All
                 </button>
@@ -297,7 +297,15 @@ export function usePictureInPicture() {
           globeBtn.addEventListener('click', (e: MouseEvent) => {
             e.stopPropagation()
             showGlobeMenu = !showGlobeMenu
-            globeMenu.style.display = showGlobeMenu ? 'flex' : 'none'
+            if (showGlobeMenu) {
+              // Position dropdown relative to the button
+              const rect = globeBtn.getBoundingClientRect()
+              globeMenu.style.top = `${rect.bottom + 4}px`
+              globeMenu.style.right = `${window.innerWidth - rect.right}px`
+              globeMenu.style.display = 'flex'
+            } else {
+              globeMenu.style.display = 'none'
+            }
           })
         }
         
