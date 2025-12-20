@@ -6,10 +6,14 @@ describe('Timer Store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.useFakeTimers()
+    // Clear localStorage before each test
+    localStorage.clear()
   })
 
   afterEach(() => {
     vi.useRealTimers()
+    // Clear localStorage after each test
+    localStorage.clear()
   })
 
   describe('Initial State', () => {
@@ -21,7 +25,7 @@ describe('Timer Store', () => {
       expect(store.totalSeconds).toBe(0)
       expect(store.formattedTime).toBe('00:00')
       expect(store.savedTimes).toEqual([])
-      expect(store.viewMode).toBe('girthy')
+      expect(store.viewMode).toBe('compact')
     })
   })
 
@@ -227,18 +231,6 @@ describe('Timer Store', () => {
     })
   })
 
-  describe('View Mode', () => {
-    it('should toggle view mode between compact and girthy', () => {
-      const store = useTimerStore()
-      
-      expect(store.viewMode).toBe('girthy')
-      
-      store.toggleViewMode()
-      expect(store.viewMode).toBe('compact')
-      
-      store.toggleViewMode()
-      expect(store.viewMode).toBe('girthy')
-    })
-  })
+  // View mode toggle removed - tests removed
 })
 

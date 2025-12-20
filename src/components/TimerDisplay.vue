@@ -139,6 +139,7 @@ function toggleDrawer() {
   gap: 0;
   padding: 0;
   width: fit-content;
+  overflow: visible;
 }
 
 .timer-panel {

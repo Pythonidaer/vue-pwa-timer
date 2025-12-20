@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useTimerStore } from '@/stores/timer'
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 
 interface Props {
   showNotesInput: boolean
@@ -19,6 +19,7 @@ const emit = defineEmits<Emits>()
 const timerStore = useTimerStore()
 const expandedNotes = ref<Set<string>>(new Set())
 const showMenu = ref(false)
+const menuDropdownRef = ref<HTMLElement | null>(null)
 
 function toggleNotes(id: string) {
   if (expandedNotes.value.has(id)) {
@@ -28,8 +29,18 @@ function toggleNotes(id: string) {
   }
 }
 
-function toggleMenu() {
+async function toggleMenu(event?: MouseEvent) {
   showMenu.value = !showMenu.value
+  if (showMenu.value && event) {
+    await nextTick()
+    // Position dropdown relative to the button
+    const button = event.currentTarget as HTMLElement
+    if (menuDropdownRef.value && button) {
+      const rect = button.getBoundingClientRect()
+      menuDropdownRef.value.style.top = `${rect.bottom + 4}px`
+      menuDropdownRef.value.style.right = `${window.innerWidth - rect.right}px`
+    }
+  }
 }
 
 function handleMenuAction(action: string) {
@@ -43,7 +54,7 @@ function handleMenuAction(action: string) {
 
 function handleClickOutside(event: MouseEvent) {
   const target = event.target as HTMLElement
-  if (showMenu.value && !target.closest('.header-controls')) {
+  if (showMenu.value && !target.closest('.header-controls') && !target.closest('.menu-dropdown')) {
     showMenu.value = false
   }
 }
@@ -100,12 +111,12 @@ const visibleSavedTimes = computed(() =>
         <!-- Globe Menu Button -->
         <button 
           class="btn-header btn-globe"
-          @click="toggleMenu"
+          @click="toggleMenu($event)"
           aria-label="Menu"
         >
           <i class="pi pi-globe"></i>
         </button>
-              <div v-if="showMenu" class="menu-dropdown">
+              <div v-if="showMenu" ref="menuDropdownRef" class="menu-dropdown">
                 <button
                   class="menu-item"
                   @click="handleMenuAction('export-all')"
@@ -263,10 +274,7 @@ const visibleSavedTimes = computed(() =>
 }
 
 .menu-dropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 0.25rem;
+  position: fixed;
   background: #1a1a1a;
   border: 0.25px solid #2a2a2a;
   border-radius: 4px;
@@ -274,7 +282,7 @@ const visibleSavedTimes = computed(() =>
   display: flex;
   flex-direction: column;
   min-width: 120px;
-  z-index: 1000;
+  z-index: 10000;
 }
 
 .menu-item {

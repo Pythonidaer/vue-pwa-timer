@@ -8,28 +8,37 @@ describe('SavedTimesDrawer', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.useFakeTimers()
+    // Clear localStorage before each test
+    localStorage.clear()
   })
 
   afterEach(() => {
     vi.useRealTimers()
+    // Clear localStorage after each test
+    localStorage.clear()
   })
 
+  const defaultProps = {
+    showNotesInput: false,
+    notesInput: ''
+  }
+
   it('should render the drawer container', () => {
-    const wrapper = mount(SavedTimesDrawer)
+    const wrapper = mount(SavedTimesDrawer, { props: defaultProps })
     
     expect(wrapper.find('.drawer-container').exists()).toBe(true)
     expect(wrapper.find('.drawer-header').exists()).toBe(true)
   })
 
   it('should render the drawer header with controls', () => {
-    const wrapper = mount(SavedTimesDrawer)
+    const wrapper = mount(SavedTimesDrawer, { props: defaultProps })
     
     expect(wrapper.find('.drawer-header').exists()).toBe(true)
     expect(wrapper.find('.header-controls').exists()).toBe(true)
   })
 
   it('should not show empty state message (removed)', () => {
-    const wrapper = mount(SavedTimesDrawer)
+    const wrapper = mount(SavedTimesDrawer, { props: defaultProps })
     
     expect(wrapper.find('.empty-state').exists()).toBe(false)
   })
@@ -41,7 +50,7 @@ describe('SavedTimesDrawer', () => {
     store.pause()
     store.saveTime('Test notes')
     
-    const wrapper = mount(SavedTimesDrawer)
+    const wrapper = mount(SavedTimesDrawer, { props: defaultProps })
     await wrapper.vm.$nextTick()
     
     expect(wrapper.find('.saved-time-item').exists()).toBe(true)
@@ -51,21 +60,7 @@ describe('SavedTimesDrawer', () => {
     expect(toggleButton.find('i.pi-eye').exists()).toBe(true)
   })
 
-  it('should format date correctly', async () => {
-    const store = useTimerStore()
-    store.start()
-    vi.advanceTimersByTime(10000)
-    store.pause()
-    store.saveTime('Test')
-    
-    const wrapper = mount(SavedTimesDrawer)
-    await wrapper.vm.$nextTick()
-    
-    const dateElement = wrapper.find('.date')
-    expect(dateElement.exists()).toBe(true)
-    // Date format should be MM/DD/YY
-    expect(dateElement.text()).toMatch(/\d{2}\/\d{2}\/\d{2}/)
-  })
+  // Date display removed - test removed
 
   it('should display saved time', async () => {
     const store = useTimerStore()
@@ -74,7 +69,7 @@ describe('SavedTimesDrawer', () => {
     store.pause()
     store.saveTime()
     
-    const wrapper = mount(SavedTimesDrawer)
+    const wrapper = mount(SavedTimesDrawer, { props: defaultProps })
     await wrapper.vm.$nextTick()
     
     const timeElement = wrapper.find('.time')
@@ -88,7 +83,7 @@ describe('SavedTimesDrawer', () => {
     store.pause()
     store.saveTime('Test notes')
     
-    const wrapper = mount(SavedTimesDrawer)
+    const wrapper = mount(SavedTimesDrawer, { props: defaultProps })
     await wrapper.vm.$nextTick()
     
     const toggleButton = wrapper.find('.btn-toggle-notes')
@@ -114,7 +109,7 @@ describe('SavedTimesDrawer', () => {
     
     const deleteSpy = vi.spyOn(store, 'deleteSavedTime')
     
-    const wrapper = mount(SavedTimesDrawer)
+    const wrapper = mount(SavedTimesDrawer, { props: defaultProps })
     await wrapper.vm.$nextTick()
     
     const deleteButton = wrapper.find('.btn-delete')
@@ -132,7 +127,7 @@ describe('SavedTimesDrawer', () => {
     
     const exportSpy = vi.spyOn(store, 'exportSavedTime')
     
-    const wrapper = mount(SavedTimesDrawer)
+    const wrapper = mount(SavedTimesDrawer, { props: defaultProps })
     await wrapper.vm.$nextTick()
     
     const exportButtons = wrapper.findAll('.btn-action')
@@ -145,51 +140,7 @@ describe('SavedTimesDrawer', () => {
   })
 
 
-  it('should call toggleViewMode when view toggle menu item is clicked', async () => {
-    const store = useTimerStore()
-    const toggleSpy = vi.spyOn(store, 'toggleViewMode')
-    
-    const wrapper = mount(SavedTimesDrawer)
-    
-    // Click globe icon to open menu
-    const globeButton = wrapper.find('.btn-header')
-    await globeButton.trigger('click')
-    await wrapper.vm.$nextTick()
-    
-    // Click the toggle view menu item
-    const menuItems = wrapper.findAll('.menu-item')
-    const toggleViewItem = menuItems.find(item => item.text().includes('View'))
-    if (toggleViewItem) {
-      await toggleViewItem.trigger('click')
-      expect(toggleSpy).toHaveBeenCalled()
-    } else {
-      // Fallback: try to find by text content
-      const viewItem = wrapper.find('.menu-item')
-      if (viewItem.exists()) {
-        await viewItem.trigger('click')
-        expect(toggleSpy).toHaveBeenCalled()
-      }
-    }
-  })
-
-  it('should apply view mode class to list', async () => {
-    const store = useTimerStore()
-    store.start()
-    vi.advanceTimersByTime(10000)
-    store.pause()
-    store.saveTime('Test')
-    
-    const wrapper = mount(SavedTimesDrawer)
-    await wrapper.vm.$nextTick()
-    
-    const list = wrapper.find('.saved-times-list')
-    expect(list.classes()).toContain('girthy')
-    
-    store.toggleViewMode()
-    await wrapper.vm.$nextTick()
-    
-    expect(list.classes()).toContain('compact')
-  })
+  // View mode toggle removed - tests removed
 
   it('should call exportAllSavedTimes when export all menu item is clicked', async () => {
     const store = useTimerStore()
@@ -200,7 +151,7 @@ describe('SavedTimesDrawer', () => {
     
     const exportAllSpy = vi.spyOn(store, 'exportAllSavedTimes')
     
-    const wrapper = mount(SavedTimesDrawer)
+    const wrapper = mount(SavedTimesDrawer, { props: defaultProps })
     
     // Click globe icon to open menu
     const globeButton = wrapper.find('.btn-header')
@@ -225,7 +176,7 @@ describe('SavedTimesDrawer', () => {
     
     const deleteAllSpy = vi.spyOn(store, 'deleteAllSavedTimes')
     
-    const wrapper = mount(SavedTimesDrawer)
+    const wrapper = mount(SavedTimesDrawer, { props: defaultProps })
     
     // Click globe icon to open menu
     const globeButton = wrapper.find('.btn-header')
@@ -242,7 +193,7 @@ describe('SavedTimesDrawer', () => {
   })
 
   it('should disable export all and delete all menu items when no saved times', async () => {
-    const wrapper = mount(SavedTimesDrawer)
+    const wrapper = mount(SavedTimesDrawer, { props: defaultProps })
     
     // Click globe icon to open menu
     const globeButton = wrapper.find('.btn-header')
