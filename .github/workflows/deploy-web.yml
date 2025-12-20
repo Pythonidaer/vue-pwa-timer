@@ -22,10 +22,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install dependencies
-        run: npm install
-      - name: Build web app
-        run: npm run build:web
+      - name: Install and build from workspace
+        working-directory: apps/web
+        run: |
+          npm install
+          npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
           path: apps/web/dist
