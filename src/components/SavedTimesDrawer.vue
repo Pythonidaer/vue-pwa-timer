@@ -183,6 +183,8 @@ const visibleSavedTimes = computed(() =>
   box-shadow: none;
   animation: slideDown 0.3s ease;
   margin-top: 0;
+  position: relative;
+  overflow: visible;
 }
 
 @keyframes slideDown {
@@ -205,6 +207,7 @@ const visibleSavedTimes = computed(() =>
   border-bottom: 0.25px solid #1a1a1a;
   position: relative;
   width: 100%;
+  z-index: 1;
 }
 
 .header-controls {
@@ -214,6 +217,7 @@ const visibleSavedTimes = computed(() =>
   width: 100%;
   justify-content: space-between;
   align-items: center;
+  z-index: 1;
 }
 
 .btn-header {
@@ -270,7 +274,7 @@ const visibleSavedTimes = computed(() =>
   display: flex;
   flex-direction: column;
   min-width: 120px;
-  z-index: 10;
+  z-index: 1000;
 }
 
 .menu-item {
