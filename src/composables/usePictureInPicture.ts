@@ -273,9 +273,6 @@ export function usePictureInPicture() {
                 <i class="pi pi-globe"></i>
               </button>
               <div id="pip-globe-menu" style="display: none; position: absolute; top: 100%; right: 0; margin-top: 0.25rem; background: #1a1a1a; border: 0.25px solid #2a2a2a; border-radius: 4px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); flex-direction: column; min-width: 120px; width: 100%; max-width: 260px; z-index: 1000; overflow: hidden;">
-                <button id="pip-menu-toggle-view" class="pip-menu-item" style="background: none; border: none; color: #ccc; cursor: pointer; font-size: 0.85rem; padding: 0.5rem 0.75rem; text-align: left; transition: all 0.15s ease; border-bottom: 0.25px solid #2a2a2a;">
-                  ${timerStore.viewMode === 'compact' ? 'Girthy View' : 'Compact View'}
-                </button>
                 <button id="pip-menu-export-all" class="pip-menu-item" style="background: none; border: none; color: #ccc; cursor: pointer; font-size: 0.85rem; padding: 0.5rem 0.75rem; text-align: left; transition: all 0.15s ease; border-bottom: 0.25px solid #2a2a2a; ${timerStore.savedTimes.length === 0 ? 'opacity: 0.3; cursor: not-allowed;' : ''}">
                   Export All
                 </button>
@@ -284,7 +281,7 @@ export function usePictureInPicture() {
                 </button>
               </div>
             </div>
-            <div id="pip-saved-times" style="display: flex; flex-direction: column; gap: ${timerStore.viewMode === 'compact' ? '0.25rem' : '0.6rem'}; padding: 0;">
+            <div id="pip-saved-times" style="display: flex; flex-direction: column; gap: 0.25rem; padding: 0;">
             </div>
           </div>
         `
@@ -293,7 +290,6 @@ export function usePictureInPicture() {
         let showGlobeMenu = false
         const globeBtn = pipDoc.getElementById('pip-globe')
         const globeMenu = pipDoc.getElementById('pip-globe-menu')
-        const toggleViewBtn = pipDoc.getElementById('pip-menu-toggle-view')
         const exportAllBtn = pipDoc.getElementById('pip-menu-export-all')
         const deleteAllBtn = pipDoc.getElementById('pip-menu-delete-all')
         
@@ -302,14 +298,6 @@ export function usePictureInPicture() {
             e.stopPropagation()
             showGlobeMenu = !showGlobeMenu
             globeMenu.style.display = showGlobeMenu ? 'flex' : 'none'
-          })
-        }
-        
-        if (toggleViewBtn) {
-          toggleViewBtn.addEventListener('click', () => {
-            timerStore.toggleViewMode()
-            showGlobeMenu = false
-            if (globeMenu) globeMenu.style.display = 'none'
           })
         }
         
@@ -399,17 +387,17 @@ export function usePictureInPicture() {
             savedTimesContainer.innerHTML = timerStore.savedTimes.map(st => {
               const isExpanded = expandedNotes.has(st.id)
               return `
-              <div style="background: #151515; border: 0.5px solid rgba(42, 42, 42, 0.5); border-radius: 3px; padding: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem;">
+              <div style="background: #151515; border: 0.5px solid rgba(42, 42, 42, 0.5); border-radius: 3px; padding: 0.3rem 0.5rem; display: flex; flex-direction: column; gap: 0.4rem;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                   <div style="display: flex; gap: 0.6rem; align-items: center; flex: 1;">
                     <span style="font-family: 'DSEG7-Classic', monospace; color: #fff; font-size: 0.95rem; min-width: 45px;">${st.time}</span>
                   </div>
                   <div style="display: flex; gap: 0.3rem; align-items: center;">
                     ${st.notes ? `<button id="pip-toggle-notes-${st.id}" style="background: transparent; border: 1px solid transparent; color: #ccc; padding: 0.2rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem;"><i class="pi ${isExpanded ? 'pi-eye-slash' : 'pi-eye'}"></i></button>` : ''}
-                    <button style="background: transparent; border: 1px solid transparent; color: #ccc; padding: 0.2rem; border-radius: 4px; cursor: pointer;" onclick="navigator.clipboard.writeText(JSON.stringify({time: '${st.time}', notes: '${st.notes}'}, null, 2))">
+                    <button id="pip-export-${st.id}" style="background: transparent; border: 1px solid transparent; color: #ccc; padding: 0.2rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">
                       <i class="pi pi-download"></i>
                     </button>
-                    <button style="background: transparent; border: 1px solid transparent; color: #cc4444; padding: 0.2rem; border-radius: 4px; cursor: pointer;" onclick="window.dispatchEvent(new CustomEvent('pip-delete-time', {detail: '${st.id}'}))">
+                    <button id="pip-delete-${st.id}" style="background: transparent; border: 1px solid transparent; color: #cc4444; padding: 0.2rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">
                       <i class="pi pi-trash"></i>
                     </button>
                   </div>
@@ -419,7 +407,7 @@ export function usePictureInPicture() {
             `
             }).join('')
             
-            // Add toggle listeners for notes
+            // Add toggle listeners for notes, export, and delete
             timerStore.savedTimes.forEach(st => {
               if (st.notes) {
                 const toggleBtn = pipDoc.getElementById(`pip-toggle-notes-${st.id}`)
@@ -433,6 +421,22 @@ export function usePictureInPicture() {
                     updateSavedTimes()
                   })
                 }
+              }
+              
+              // Export button
+              const exportBtn = pipDoc.getElementById(`pip-export-${st.id}`)
+              if (exportBtn) {
+                exportBtn.addEventListener('click', () => {
+                  timerStore.exportSavedTime(st.id)
+                })
+              }
+              
+              // Delete button
+              const deleteBtn = pipDoc.getElementById(`pip-delete-${st.id}`)
+              if (deleteBtn) {
+                deleteBtn.addEventListener('click', () => {
+                  timerStore.deleteSavedTime(st.id)
+                })
               }
             })
           }
@@ -453,9 +457,9 @@ export function usePictureInPicture() {
         })
       }
       
-      // Watch for saved times and view mode changes
+      // Watch for saved times changes
       const savedTimesWatcher = watch(
-        () => [timerStore.savedTimes, timerStore.viewMode],
+        () => timerStore.savedTimes,
         () => {
           updateSavedTimes()
           // Update menu button states
@@ -482,11 +486,6 @@ export function usePictureInPicture() {
               deleteAllBtn.style.opacity = '1'
               deleteAllBtn.style.cursor = 'pointer'
             }
-          }
-          // Update toggle view text
-          const toggleViewBtn = pipDoc.getElementById('pip-menu-toggle-view')
-          if (toggleViewBtn) {
-            toggleViewBtn.textContent = timerStore.viewMode === 'compact' ? 'Girthy View' : 'Compact View'
           }
         },
         { deep: true }

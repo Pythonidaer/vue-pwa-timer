@@ -34,9 +34,7 @@ function toggleMenu() {
 
 function handleMenuAction(action: string) {
   showMenu.value = false
-  if (action === 'toggle-view') {
-    timerStore.toggleViewMode()
-  } else if (action === 'export-all') {
+  if (action === 'export-all') {
     timerStore.exportAllSavedTimes()
   } else if (action === 'delete-all') {
     timerStore.deleteAllSavedTimes()
@@ -107,42 +105,32 @@ const visibleSavedTimes = computed(() =>
         >
           <i class="pi pi-globe"></i>
         </button>
-        <div v-if="showMenu" class="menu-dropdown">
-          <button 
-            class="menu-item"
-            @click="handleMenuAction('toggle-view')"
-          >
-            {{ timerStore.viewMode === 'compact' ? 'Girthy View' : 'Compact View' }}
-          </button>
-          <button 
-            class="menu-item"
-            @click="handleMenuAction('export-all')"
-            :disabled="visibleSavedTimes.length === 0"
-          >
-            Export All
-          </button>
-          <button 
-            class="menu-item menu-item-danger"
-            @click="handleMenuAction('delete-all')"
-            :disabled="visibleSavedTimes.length === 0"
-          >
-            Delete All
-          </button>
-        </div>
+              <div v-if="showMenu" class="menu-dropdown">
+                <button
+                  class="menu-item"
+                  @click="handleMenuAction('export-all')"
+                  :disabled="visibleSavedTimes.length === 0"
+                >
+                  Export All
+                </button>
+                <button
+                  class="menu-item menu-item-danger"
+                  @click="handleMenuAction('delete-all')"
+                  :disabled="visibleSavedTimes.length === 0"
+                >
+                  Delete All
+                </button>
+              </div>
       </div>
     </div>
     
-    <!-- Saved Times List -->
-    <div 
-      class="saved-times-list"
-      :class="timerStore.viewMode"
-    >
-      <div
-        v-for="savedTime in visibleSavedTimes"
-        :key="savedTime.id"
-        class="saved-time-item"
-        :class="timerStore.viewMode"
-      >
+          <!-- Saved Times List -->
+          <div class="saved-times-list">
+            <div
+              v-for="savedTime in visibleSavedTimes"
+              :key="savedTime.id"
+              class="saved-time-item"
+            >
         <div class="saved-time-main">
           <div class="saved-time-info">
             <span class="time">{{ savedTime.time }}</span>
@@ -368,31 +356,15 @@ const visibleSavedTimes = computed(() =>
 .saved-times-list {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-}
-
-.saved-times-list.compact {
   gap: 0.25rem;
-}
-
-.saved-times-list.girthy {
-  gap: 0.6rem;
 }
 
 .saved-time-item {
   background: #1a1a1a;
   border: 0.5px solid rgba(42, 42, 42, 0.5);
   border-radius: 3px;
-  padding: 0.5rem;
-  transition: all 0.2s ease;
-}
-
-.saved-time-item.compact {
   padding: 0.3rem 0.5rem;
-}
-
-.saved-time-item.girthy {
-  padding: 0.7rem;
+  transition: all 0.2s ease;
 }
 
 .saved-time-item:hover {
