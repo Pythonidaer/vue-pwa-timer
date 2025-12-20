@@ -19,7 +19,7 @@ export default defineConfig({
         description: 'A sleek timer application',
         theme_color: '#0d0d0d',
         background_color: '#0d0d0d',
-        display: 'picture-in-picture' as any,
+        display: 'standalone',
         id: '/vue-pwa-timer/',
         start_url: '/vue-pwa-timer/',
         scope: '/vue-pwa-timer/',
@@ -40,8 +40,8 @@ export default defineConfig({
             type: 'image/png'
           }
         ],
-        // Picture-in-picture for small widget window
-        display_override: ['picture-in-picture' as any, 'window-controls-overlay', 'standalone'],
+        // Window controls overlay for minimal UI
+        display_override: ['window-controls-overlay', 'standalone'],
         // Window size preferences (Chrome/Edge specific)
         prefer_related_applications: false,
       },
