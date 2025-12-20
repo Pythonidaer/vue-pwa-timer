@@ -492,7 +492,7 @@ const visibleSavedTimes = computed(() =>
   padding: 0.4rem;
   border-top: none;
   background: #3b3b3b;
-  color: #000000;
+  color: #ffffff;
   font-size: 0.85rem;
   border-radius: 0 0 3px 3px;
   font-family: 'DSEG7-Classic', monospace;
