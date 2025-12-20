@@ -225,6 +225,32 @@ export function usePictureInPicture() {
       const drawerContainer = pipDoc.getElementById('pip-drawer-container')
       let pipDrawerOpen = false
       
+      function updateSavedTimes() {
+        const savedTimesContainer = pipDoc.getElementById('pip-saved-times')
+        if (savedTimesContainer && pipDrawerOpen) {
+          if (timerStore.savedTimes.length === 0) {
+            savedTimesContainer.innerHTML = '<div style="color: #666; text-align: center; padding: 1rem;">No saved times yet</div>'
+          } else {
+            savedTimesContainer.innerHTML = timerStore.savedTimes.map(st => `
+              <div style="background: #1a1a1a; border: 0.5px solid rgba(42, 42, 42, 0.5); border-radius: 3px; padding: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; gap: 0.6rem; align-items: center;">
+                  <span style="color: #888; font-size: 0.85rem; min-width: 65px;">${st.date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' })}</span>
+                  <span style="font-family: monospace; color: #fff; font-size: 0.95rem; min-width: 45px;">${st.time}</span>
+                </div>
+                <div style="display: flex; gap: 0.3rem;">
+                  <button style="background: transparent; border: 1px solid transparent; color: #888; padding: 0.2rem; border-radius: 4px; cursor: pointer;" onclick="navigator.clipboard.writeText(JSON.stringify({date: '${st.date.toLocaleDateString()}', time: '${st.time}', notes: '${st.notes}'}, null, 2))">
+                    <i class="pi pi-download"></i>
+                  </button>
+                  <button style="background: transparent; border: 1px solid transparent; color: #cc4444; padding: 0.2rem; border-radius: 4px; cursor: pointer;" onclick="window.dispatchEvent(new CustomEvent('pip-delete-time', {detail: '${st.id}'}))">
+                    <i class="pi pi-trash"></i>
+                  </button>
+                </div>
+              </div>
+            `).join('')
+          }
+        }
+      }
+      
       if (drawerBtn && drawerIcon && drawerContainer) {
         drawerBtn.addEventListener('click', () => {
           pipDrawerOpen = !pipDrawerOpen
@@ -252,32 +278,6 @@ export function usePictureInPicture() {
             drawerContainer.style.display = 'none'
           }
         })
-      }
-      
-      function updateSavedTimes() {
-        const savedTimesContainer = pipDoc.getElementById('pip-saved-times')
-        if (savedTimesContainer && pipDrawerOpen) {
-          if (timerStore.savedTimes.length === 0) {
-            savedTimesContainer.innerHTML = '<div style="color: #666; text-align: center; padding: 1rem;">No saved times yet</div>'
-          } else {
-            savedTimesContainer.innerHTML = timerStore.savedTimes.map(st => `
-              <div style="background: #1a1a1a; border: 0.5px solid rgba(42, 42, 42, 0.5); border-radius: 3px; padding: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
-                <div style="display: flex; gap: 0.6rem; align-items: center;">
-                  <span style="color: #888; font-size: 0.85rem; min-width: 65px;">${st.date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' })}</span>
-                  <span style="font-family: monospace; color: #fff; font-size: 0.95rem; min-width: 45px;">${st.time}</span>
-                </div>
-                <div style="display: flex; gap: 0.3rem;">
-                  <button style="background: transparent; border: 1px solid transparent; color: #888; padding: 0.2rem; border-radius: 4px; cursor: pointer;" onclick="navigator.clipboard.writeText(JSON.stringify({date: '${st.date.toLocaleDateString()}', time: '${st.time}', notes: '${st.notes}'}, null, 2))">
-                    <i class="pi pi-download"></i>
-                  </button>
-                  <button style="background: transparent; border: 1px solid transparent; color: #cc4444; padding: 0.2rem; border-radius: 4px; cursor: pointer;" onclick="window.dispatchEvent(new CustomEvent('pip-delete-time', {detail: '${st.id}'}))">
-                    <i class="pi pi-trash"></i>
-                  </button>
-                </div>
-              </div>
-            `).join('')
-          }
-        }
       }
       
       // Watch for saved times changes
