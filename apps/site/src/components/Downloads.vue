@@ -1,27 +1,41 @@
 <script setup lang="ts">
+// GitHub repository
+const githubRepo = 'Pythonidaer/vue-pwa-timer'
+const version = 'v0.1.0'
+
 const platforms = [
   {
     name: 'macOS',
     icon: '🍎',
-    description: 'Download for Mac',
-    placeholder: true,
-    url: '#'
+    description: 'Download for Mac (Intel & Apple Silicon)',
+    placeholder: false,
+    // GitHub Release asset URLs - these will be available after creating the release
+    url: `https://github.com/${githubRepo}/releases/download/${version}/Timer_0.1.0_aarch64.dmg`,
+    // Alternative: Intel Mac
+    urlIntel: `https://github.com/${githubRepo}/releases/download/${version}/Timer_0.1.0_x64.dmg`
   },
   {
     name: 'Windows',
     icon: '🪟',
     description: 'Download for Windows',
-    placeholder: true,
-    url: '#'
+    placeholder: false,
+    url: `https://github.com/${githubRepo}/releases/download/${version}/Timer_0.1.0_x64-setup.exe`
   },
   {
     name: 'Linux',
     icon: '🐧',
     description: 'Download for Linux',
-    placeholder: true,
-    url: '#'
+    placeholder: false,
+    url: `https://github.com/${githubRepo}/releases/download/${version}/Timer_0.1.0_amd64.AppImage`
   }
 ]
+
+function handleDownload(platform: typeof platforms[0]) {
+  if (platform.placeholder) return
+  
+  // Open download link
+  window.open(platform.url, '_blank')
+}
 </script>
 
 <template>
@@ -44,6 +58,7 @@ const platforms = [
           <button
             :class="['download-button', { 'placeholder': platform.placeholder }]"
             :disabled="platform.placeholder"
+            @click="handleDownload(platform)"
           >
             {{ platform.placeholder ? 'Coming Soon' : 'Download' }}
           </button>
@@ -55,16 +70,16 @@ const platforms = [
 
       <div class="download-info">
         <p class="info-text">
-          All downloads will be available from
+          All downloads are available from
           <a
-            href="https://github.com/YOUR_USERNAME/vue-pwa-timer/releases"
+            :href="`https://github.com/${githubRepo}/releases`"
             target="_blank"
             rel="noopener noreferrer"
             class="info-link"
           >
             GitHub Releases
           </a>
-          once the desktop app is built and signed.
+          . Check the latest release for all platform installers.
         </p>
       </div>
     </div>
