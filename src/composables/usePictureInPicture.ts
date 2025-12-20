@@ -38,7 +38,7 @@ export function usePictureInPicture() {
               box-sizing: border-box;
             }
             body {
-              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                  font-family: 'DSEG7-Classic', monospace;
               background: transparent;
               margin: 0;
               padding: 0;
@@ -402,7 +402,7 @@ export function usePictureInPicture() {
               <div style="background: #151515; border: 0.5px solid rgba(42, 42, 42, 0.5); border-radius: 3px; padding: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                   <div style="display: flex; gap: 0.6rem; align-items: center; flex: 1;">
-                    <span style="font-family: monospace; color: #fff; font-size: 0.95rem; min-width: 45px;">${st.time}</span>
+                    <span style="font-family: 'DSEG7-Classic', monospace; color: #fff; font-size: 0.95rem; min-width: 45px;">${st.time}</span>
                   </div>
                   <div style="display: flex; gap: 0.3rem; align-items: center;">
                     ${st.notes ? `<button id="pip-toggle-notes-${st.id}" style="background: transparent; border: 1px solid transparent; color: #ccc; padding: 0.2rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem;"><i class="pi ${isExpanded ? 'pi-eye-slash' : 'pi-eye'}"></i></button>` : ''}
@@ -414,7 +414,7 @@ export function usePictureInPicture() {
                     </button>
                   </div>
                 </div>
-                ${st.notes && isExpanded ? `<div style="margin-top: 0.4rem; padding: 0.4rem; border-top: 1px solid #ccc; background: #1a1a1a; color: #ffffff; font-size: 0.85rem; border-radius: 0 0 3px 3px;">${st.notes}</div>` : ''}
+                ${st.notes && isExpanded ? `<div style="margin-top: 0.4rem; padding: 0.4rem; border-top: none; background: #3b3b3b; color: #000000; font-size: 0.85rem; border-radius: 0 0 3px 3px; font-family: 'DSEG7-Classic', monospace;">${st.notes}</div>` : ''}
               </div>
             `
             }).join('')

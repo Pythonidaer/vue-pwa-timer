@@ -415,7 +415,7 @@ const visibleSavedTimes = computed(() =>
 }
 
 .time {
-  font-family: 'Courier New', monospace;
+  font-family: 'DSEG7-Classic', monospace;
   font-size: 0.95rem;
   font-weight: bold;
   color: #ffffff;
@@ -490,10 +490,11 @@ const visibleSavedTimes = computed(() =>
 .saved-time-notes {
   margin-top: 0.4rem;
   padding: 0.4rem;
-  border-top: 1px solid #ccc;
-  background: #1a1a1a;
-  color: #ffffff;
+  border-top: none;
+  background: #3b3b3b;
+  color: #000000;
   font-size: 0.85rem;
   border-radius: 0 0 3px 3px;
+  font-family: 'DSEG7-Classic', monospace;
 }
 </style>

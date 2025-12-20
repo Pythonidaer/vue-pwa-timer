@@ -18,7 +18,7 @@ import TimerDisplay from './components/TimerDisplay.vue'
 }
 
 html, body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family: 'DSEG7-Classic', monospace;
   background: transparent;
   margin: 0;
   padding: 0;
