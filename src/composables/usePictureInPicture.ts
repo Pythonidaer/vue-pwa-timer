@@ -38,7 +38,7 @@ export function usePictureInPicture() {
               box-sizing: border-box;
             }
             body {
-                  font-family: 'DSEG7-Classic', monospace;
+              font-family: 'Courier New', Courier, monospace;
               background: transparent;
               margin: 0;
               padding: 0;
@@ -414,7 +414,7 @@ export function usePictureInPicture() {
                     </button>
                   </div>
                 </div>
-                ${st.notes && isExpanded ? `<div style="margin-top: 0.4rem; padding: 0.4rem; border-top: none; background: #3b3b3b; color: #ffffff; font-size: 0.85rem; border-radius: 0 0 3px 3px; font-family: 'DSEG7-Classic', monospace;">${st.notes}</div>` : ''}
+                ${st.notes && isExpanded ? `<div style="margin-top: 0.4rem; padding: 0.4rem; border-top: none; background: #3b3b3b; color: #ffffff; font-size: 0.85rem; border-radius: 0 0 3px 3px; font-family: 'Courier New', Courier, monospace;">${st.notes}</div>` : ''}
               </div>
             `
             }).join('')

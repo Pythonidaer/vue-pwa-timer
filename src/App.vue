@@ -18,7 +18,7 @@ import TimerDisplay from './components/TimerDisplay.vue'
 }
 
 html, body {
-  font-family: 'DSEG7-Classic', monospace;
+  font-family: 'Courier New', Courier, monospace;
   background: transparent;
   margin: 0;
   padding: 0;

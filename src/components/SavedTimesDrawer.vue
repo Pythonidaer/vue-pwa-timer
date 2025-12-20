@@ -495,6 +495,6 @@ const visibleSavedTimes = computed(() =>
   color: #ffffff;
   font-size: 0.85rem;
   border-radius: 0 0 3px 3px;
-  font-family: 'DSEG7-Classic', monospace;
+  font-family: 'Courier New', Courier, monospace;
 }
 </style>
