@@ -14,10 +14,22 @@ const showMainContent = ref(true)
 // Listen for PiP events to hide/show main content
 window.addEventListener('pip-opened', () => {
   showMainContent.value = false
+  // Try to minimize or hide the main window
+  // On macOS, we can't directly minimize, but blurring helps
+  window.blur()
+  // Try experimental minimize if available
+  if ((window as any).minimize) {
+    try {
+      (window as any).minimize()
+    } catch (e) {
+      // Not available
+    }
+  }
 })
 
 window.addEventListener('pip-closed', () => {
   showMainContent.value = true
+  window.focus()
 })
 
 function handleStart() {

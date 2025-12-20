@@ -20,7 +20,7 @@ export const useTimerStore = defineStore('timer', () => {
   
   // Saved times
   const savedTimes = ref<SavedTime[]>([])
-  const viewMode = ref<ViewMode>('girthy')
+  const viewMode = ref<ViewMode>('compact')
   
   // Computed: Format time as MM:SS
   const formattedTime = computed(() => {
