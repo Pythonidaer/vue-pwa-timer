@@ -17,27 +17,38 @@ import TimerDisplay from './components/TimerDisplay.vue'
   box-sizing: border-box;
 }
 
-body {
+html, body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   background: transparent;
   margin: 0;
   padding: 0;
-  min-height: 100vh;
+  width: 260px;
+  height: auto;
+  min-width: 260px;
+  max-width: 260px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .app {
-  min-height: 100vh;
+  width: 260px;
+  height: auto;
+  min-width: 260px;
+  max-width: 260px;
   display: flex;
   flex-direction: column;
   background: transparent;
 }
 
 .app-main {
-  flex: 1;
+  width: 260px;
+  height: auto;
+  min-width: 260px;
+  max-width: 260px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.5rem;
+  padding: 0;
   justify-content: flex-start;
   background: transparent;
 }

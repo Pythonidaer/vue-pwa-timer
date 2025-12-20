@@ -109,8 +109,9 @@ function toggleDrawer() {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.2rem;
-  padding: 0.5rem;
+  gap: 0;
+  padding: 0;
+  width: fit-content;
 }
 
 .timer-panel {
