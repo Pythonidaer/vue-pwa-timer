@@ -1,0 +1,14 @@
+{
+  "name": "@timer/desktop",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'Tauri setup pending. Run: npm create tauri-app@latest'",
+    "build": "echo 'Tauri setup pending'",
+    "tauri": "tauri"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
+

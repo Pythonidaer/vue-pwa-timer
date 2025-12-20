@@ -1,0 +1,14 @@
+{
+  "name": "@timer/site",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'Marketing site setup pending. Consider using Vite, Next.js, or Astro.'",
+    "build": "echo 'Marketing site setup pending'",
+    "preview": "echo 'Marketing site setup pending'"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
+

@@ -1,100 +1,173 @@
-# Vue PWA Timer
+# Vue PWA Timer - Monorepo
 
-A sleek, minimalist timer application built with Vue 3, TypeScript, and PWA capabilities. Features a retro LCD-style display with arcade-inspired 3D buttons, Picture-in-Picture support, and persistent saved times with notes.
+A sleek, minimalist timer application available as both a Progressive Web App (PWA) and a native desktop application. Features a retro LCD-style display with arcade-inspired 3D buttons, Picture-in-Picture support, and persistent saved times with notes.
 
-## Features
+## Repository Structure
 
+This is a monorepo containing three applications:
+
+- **`apps/web`** - PWA + Picture-in-Picture version (browser-based)
+- **`apps/desktop`** - Tauri desktop application (native window control)
+- **`apps/site`** - Marketing/download website (optional)
+
+## Quick Start
+
+### Install Dependencies
+
+From the root directory:
+
+```bash
+npm install
+```
+
+This will install dependencies for all workspaces.
+
+### Development
+
+Run any app in development mode:
+
+```bash
+# PWA (browser)
+npm run dev:web
+
+# Desktop (Tauri - after setup)
+npm run dev:desktop
+
+# Marketing site (after setup)
+npm run dev:site
+```
+
+### Building
+
+Build any app for production:
+
+```bash
+# PWA
+npm run build:web
+
+# Desktop
+npm run build:desktop
+
+# Marketing site
+npm run build:site
+```
+
+## Applications
+
+### 🌐 Web App (`apps/web`)
+
+The Progressive Web App version with Picture-in-Picture support.
+
+**Features:**
 - ⏱️ Digital timer with LCD-style display (DSEG font)
 - 🎮 Arcade-inspired 3D circular buttons
 - 💾 Save timer states with optional notes
-- 📱 Progressive Web App (PWA) support
+- 📱 PWA support (installable, offline-capable)
 - 🪟 Picture-in-Picture mode for always-on-top floating window
-- 💾 Persistent storage using localStorage
 - 📤 Export saved times as JSON
-- 🎨 Sleek, dark-themed UI
+
+**Deployment:** GitHub Pages (see `apps/web/DEPLOYMENT.md`)
+
+### 🖥️ Desktop App (`apps/desktop`)
+
+Native desktop application built with Tauri.
+
+**Features:**
+- Native window with exact sizing control
+- Collapsed: 320x80 (timer only)
+- Expanded: 320x260 (with notes drawer)
+- Code signing support (macOS, Windows)
+- Auto-update capability
+
+**Status:** Setup pending - see `apps/desktop/README.md` for initialization instructions.
+
+### 🌍 Marketing Site (`apps/site`)
+
+Landing page and download hub.
+
+**Features:**
+- Download buttons for each platform
+- Links to GitHub Releases
+- App description and screenshots
+
+**Status:** Setup pending - see `apps/site/README.md` for setup options.
+
+## User Choice
+
+Users can choose their preferred experience:
+
+- **"Use in browser"** → PWA (`apps/web`)
+- **"Install desktop app"** → Tauri (`apps/desktop`)
+
+Both share the same timer logic and UI components, ensuring consistency across platforms.
+
+## Technology Stack
+
+- **Vue 3** - Progressive framework
+- **TypeScript** - Type safety
+- **Pinia** - State management
+- **Vite** - Build tool
+- **Tauri 2** - Desktop framework (desktop app)
+- **DSEG Font** - LCD-style display
+- **PrimeIcons** - Icon library
+
+## Development
+
+### Prerequisites
+
+- Node.js `^20.19.0 || >=22.12.0`
+- npm (comes with Node.js)
+
+### Workspace Scripts
+
+All scripts can be run from the root:
+
+```bash
+# Development
+npm run dev:web
+npm run dev:desktop
+npm run dev:site
+
+# Building
+npm run build:web
+npm run build:desktop
+npm run build:site
+
+# Testing
+npm run test:web
+
+# Utilities
+npm run install:all  # Install all dependencies
+npm run clean        # Clean all node_modules and dist folders
+```
+
+### Running Scripts in Workspaces
+
+You can also run scripts directly in each workspace:
+
+```bash
+cd apps/web
+npm run dev
+```
+
+## Project Status
+
+- ✅ **Web App**: Fully functional PWA with PiP support
+- 🚧 **Desktop App**: Structure ready, Tauri setup pending
+- 🚧 **Marketing Site**: Structure ready, framework setup pending
+
+## License
+
+See [LICENSE](apps/web/LICENSE) file.
 
 ## Inspiration & Resources
 
 ### Design Inspiration
-- **Realistic Alarm Clock Design**: [Elenorra SmartWake Mirror Alarm Clock](https://elenorra.com/products/smartwake-elektronische-spiegelwekker-met-alarmfunctie?currency=USD&country=US&variant=44704398737583) - Inspiration for the sleek, minimalist timer interface
-- **Arcade Button Styling**: [CodePen - Arcade Button](https://codepen.io/reulison/pen/WNNVPZq) - Inspiration for the 3D circular button design
+- **Realistic Alarm Clock Design**: [Elenorra SmartWake Mirror Alarm Clock](https://elenorra.com/products/smartwake-elektronische-spiegelwekker-met-alarmfunctie?currency=USD&country=US&variant=44704398737583)
+- **Arcade Button Styling**: [CodePen - Arcade Button](https://codepen.io/reulison/pen/WNNVPZq)
 
 ### Technologies & Libraries
-- **Vue.js**: [Vue 3 Documentation](https://vuejs.org/guide/essentials/application.html) - Core framework
-- **DSEG Font**: [GitHub - keshikan/DSEG](https://github.com/keshikan/DSEG) - LCD-style display font for timer numbers
-- **PrimeIcons**: [PrimeVue Icons](https://primevue.org/icons/) - Icon library for UI elements
-
-## Recommended IDE Setup
-
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-npm run test:unit
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
-
-## Future Updates
-
-### Tauri Desktop Application
-
-The next major milestone is to recreate this application as a legitimate desktop application using [Tauri](https://tauri.app/start/). This will provide:
-
-- **Native Desktop Experience**: True desktop application with system integration
-- **Code Signing**: Proper app signing to avoid insecure/unsigned warnings
-- **App Store Distribution**: Ability to distribute through official app stores
-- **Better Performance**: Native performance with smaller bundle sizes
-- **Cross-Platform**: Support for Windows, macOS, and Linux
-
-The migration to Tauri will involve:
-1. Setting up Tauri project structure
-2. Configuring code signing certificates
-3. Navigating the App Developer process for each platform:
-   - **macOS**: Apple Developer Program for code signing and notarization
-   - **Windows**: Code signing certificate for Windows Store or direct distribution
-   - **Linux**: AppImage, Snap, or Flatpak packaging
-4. Implementing native features (system tray, notifications, etc.)
-5. Building and distributing signed releases
-
-For more information on getting started with Tauri, visit: [Tauri Getting Started Guide](https://tauri.app/start/)
+- **Vue.js**: [Vue 3 Documentation](https://vuejs.org/guide/essentials/application.html)
+- **DSEG Font**: [GitHub - keshikan/DSEG](https://github.com/keshikan/DSEG)
+- **PrimeIcons**: [PrimeVue Icons](https://primevue.org/icons/)
+- **Tauri**: [Tauri Getting Started Guide](https://tauri.app/start/)

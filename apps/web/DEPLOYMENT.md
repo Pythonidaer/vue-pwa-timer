@@ -39,7 +39,7 @@
 
 6. **Create a GitHub Actions workflow** to automatically build and deploy:
 
-   Create `.github/workflows/deploy.yml`:
+   Create `.github/workflows/deploy-web.yml` in the repository root:
    ```yaml
    name: Deploy to GitHub Pages
 
@@ -66,10 +66,10 @@
            with:
              node-version: 20
          - run: npm ci
-         - run: npm run build
+         - run: npm run build:web
          - uses: actions/upload-pages-artifact@v3
            with:
-             path: dist
+             path: apps/web/dist
 
      deploy:
        environment:
