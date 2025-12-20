@@ -53,7 +53,22 @@ function toggleDrawer() {
 </script>
 
 <template>
-  <div v-if="showMainContent || !isSupported" class="timer-container">
+  <!-- If PiP is supported, show only the "Open Timer" button -->
+  <div v-if="isSupported && !isPiPOpen" class="pip-launch-container">
+    <button class="btn-launch-pip" @click="openPiP">
+      <i class="pi pi-play"></i>
+      <span>Open Timer</span>
+    </button>
+  </div>
+  
+  <!-- If PiP is open, show message -->
+  <div v-else-if="isPiPOpen && isSupported" class="pip-message">
+    <p>Timer is running in Picture-in-Picture window</p>
+    <p class="pip-message-small">Close the PiP window to return here</p>
+  </div>
+  
+  <!-- If PiP is NOT supported, show normal timer -->
+  <div v-else class="timer-container">
     <!-- Timer Panel -->
     <div class="timer-panel" style="position: relative;">
       <!-- Digital Display -->
@@ -100,17 +115,6 @@ function toggleDrawer() {
           </button>
         </div>
       </div>
-      
-      <!-- Picture-in-Picture Button -->
-      <button
-        v-if="isSupported && !isPiPOpen"
-        class="btn-pip"
-        @click="openPiP"
-        aria-label="Open in Picture-in-Picture"
-        title="Open in small floating window"
-      >
-        <i class="pi pi-window-maximize"></i>
-      </button>
     </div>
     
     <!-- Saved Times Drawer -->
@@ -124,12 +128,6 @@ function toggleDrawer() {
         @cancel="showNotesInput = false"
       />
     </transition>
-  </div>
-  
-  <!-- Show message when PiP is open -->
-  <div v-else-if="isPiPOpen && isSupported" class="pip-message">
-    <p>Timer is running in Picture-in-Picture window</p>
-    <p class="pip-message-small">Close the PiP window to return here</p>
   </div>
 </template>
 
@@ -322,32 +320,51 @@ function toggleDrawer() {
   transform: translateY(-10px);
 }
 
-.btn-pip {
-  position: absolute;
-  top: 0.25rem;
-  right: 0.25rem;
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
-  background: rgba(42, 42, 42, 0.6);
-  border: 0.5px solid rgba(42, 42, 42, 0.5);
-  color: #888;
-  cursor: pointer;
+.pip-launch-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
-  transition: all 0.15s ease;
-  z-index: 10;
+  min-height: 50vh;
+  padding: 2rem;
 }
 
-.btn-pip:hover {
-  background: rgba(42, 42, 42, 0.8);
-  color: #ccc;
+.btn-launch-pip {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2);
 }
 
-.btn-pip i {
-  font-size: 0.7rem;
+.btn-launch-pip:hover {
+  background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
+  box-shadow: 
+    0 6px 12px rgba(46, 125, 50, 0.4),
+    0 2px 6px rgba(0, 0, 0, 0.2),
+    inset 0 2px 4px rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.btn-launch-pip:active {
+  transform: translateY(0);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-launch-pip i {
+  font-size: 1.2rem;
 }
 
 .pip-message {
@@ -358,6 +375,7 @@ function toggleDrawer() {
   padding: 2rem;
   text-align: center;
   color: #888;
+  min-height: 50vh;
 }
 
 .pip-message p {
