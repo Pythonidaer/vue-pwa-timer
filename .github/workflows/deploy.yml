@@ -1,4 +1,4 @@
-name: Deploy Web App to GitHub Pages
+name: Deploy Apps to GitHub Pages
 
 on:
   push:
@@ -22,18 +22,36 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Clean and install in workspace
+      
+      # Build web app
+      - name: Clean and build web app
         run: |
           rm -rf node_modules package-lock.json
           cd apps/web
           rm -rf node_modules package-lock.json
           npm install
-          # Explicitly install Rollup optional dependency for Linux
           npm install @rollup/rollup-linux-x64-gnu --save-optional || npm install @rollup/rollup-linux-x64-gnu --no-save
           npm run build
+      
+      # Build marketing site
+      - name: Build marketing site
+        run: |
+          cd apps/site
+          rm -rf node_modules package-lock.json
+          npm install
+          npm run build
+      
+      # Combine both builds
+      - name: Prepare deployment
+        run: |
+          mkdir -p dist
+          cp -r apps/web/dist/* dist/
+          mkdir -p dist/site
+          cp -r apps/site/dist/* dist/site/
+      
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: apps/web/dist
+          path: dist
 
   deploy:
     environment:
