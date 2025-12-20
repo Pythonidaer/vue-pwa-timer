@@ -148,17 +148,6 @@ export function usePictureInPicture() {
                 </div>
               </div>
             </div>
-            <div id="pip-notes-container" style="display: none; width: 100%; margin-top: 0.2rem; position: relative;">
-              <div style="display: flex; gap: 0.4rem; align-items: center; position: relative;">
-                <input type="text" id="pip-notes-input" placeholder="Notes" style="flex: 1; padding: 0.3rem 2.5rem 0.3rem 0.5rem; border: 0.5px solid rgba(42, 42, 42, 0.5); border-radius: 3px; font-size: 0.85rem; background: #1a1a1a; color: white; width: 100%;" />
-                <button id="pip-notes-save" style="position: absolute; right: 24px; padding: 0.2rem; min-width: 20px; height: 20px; background: transparent; border: 1px solid transparent; color: #888; border-radius: 4px; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center;">
-                  <i class="pi pi-save"></i>
-                </button>
-                <button id="pip-notes-cancel" style="position: absolute; right: 0; padding: 0.2rem; min-width: 20px; height: 20px; background: transparent; border: 1px solid transparent; color: #888; border-radius: 4px; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center;">
-                  <i class="pi pi-times"></i>
-                </button>
-              </div>
-            </div>
             <div id="pip-drawer-container" style="display: none; width: 100%; margin-top: 0.2rem; max-height: 300px; overflow-y: auto;">
               <!-- Drawer will be rendered here when opened -->
             </div>
@@ -179,11 +168,6 @@ export function usePictureInPicture() {
       const resetBtn = pipDoc.getElementById('pip-reset')
       const drawerBtn = pipDoc.getElementById('pip-drawer')
       const drawerIcon = pipDoc.getElementById('pip-drawer-icon')
-      const notesContainer = pipDoc.getElementById('pip-notes-container')
-      const notesInput = pipDoc.getElementById('pip-notes-input') as HTMLInputElement
-      const notesSaveBtn = pipDoc.getElementById('pip-notes-save')
-      const notesCancelBtn = pipDoc.getElementById('pip-notes-cancel')
-      let showNotesInput = false
 
       // Update time display
       function updateTime() {
@@ -227,47 +211,17 @@ export function usePictureInPicture() {
       if (saveBtn) {
         saveBtn.addEventListener('click', () => {
           if (timerStore.totalSeconds > 0) {
-            // Show notes input instead of saving immediately
-            if (notesContainer && notesInput) {
-              showNotesInput = true
-              notesContainer.style.display = 'block'
-              notesInput.focus()
+            // Open drawer if not already open
+            if (!pipDrawerOpen) {
+              openDrawer()
             }
-          }
-        })
-      }
-      
-      // Notes input handlers
-      if (notesSaveBtn && notesInput) {
-        notesSaveBtn.addEventListener('click', () => {
-          if (timerStore.totalSeconds > 0) {
-            timerStore.saveTime(notesInput.value || '')
-            notesInput.value = ''
-            showNotesInput = false
-            if (notesContainer) {
-              notesContainer.style.display = 'none'
+            // Show notes input in drawer header
+            const notesWrapper = pipDoc.getElementById('pip-notes-wrapper')
+            const notesInput = pipDoc.getElementById('pip-notes-input') as HTMLInputElement
+            if (notesWrapper && notesInput) {
+              notesWrapper.style.display = 'flex'
+              setTimeout(() => notesInput.focus(), 100)
             }
-          }
-        })
-      }
-      
-      if (notesCancelBtn && notesInput) {
-        notesCancelBtn.addEventListener('click', () => {
-          notesInput.value = ''
-          showNotesInput = false
-          if (notesContainer) {
-            notesContainer.style.display = 'none'
-          }
-        })
-      }
-      
-      // Allow Enter key to save notes
-      if (notesInput) {
-        notesInput.addEventListener('keyup', (e) => {
-          if (e.key === 'Enter' && notesSaveBtn) {
-            (notesSaveBtn as HTMLElement).click()
-          } else if (e.key === 'Escape' && notesCancelBtn) {
-            (notesCancelBtn as HTMLElement).click()
           }
         })
       }
@@ -283,11 +237,87 @@ export function usePictureInPicture() {
       
       const expandedNotes = new Set<string>()
       
+      function openDrawer() {
+        if (!drawerContainer || !drawerIcon) return
+        pipDrawerOpen = true
+        drawerIcon.className = 'pi pi-chevron-up'
+        drawerContainer.style.display = 'block'
+        drawerContainer.innerHTML = `
+          <div style="background: #0a0a0a; border: 0.5px solid rgba(26, 26, 26, 0.5); border-radius: 0 0 3px 3px; padding: 0.75rem; font-size: 0.85rem; color: #888;">
+            <div id="pip-drawer-header" style="margin-bottom: 0.5rem; padding-bottom: 0.3rem; border-bottom: 0.5px solid rgba(26, 26, 26, 0.5); display: flex; align-items: center; gap: 0.4rem; background: #1a1a1a; padding: 0.5rem; border-radius: 3px;">
+              <div id="pip-notes-wrapper" style="display: none; flex: 1; position: relative;">
+                <input type="text" id="pip-notes-input" placeholder="Notes" style="width: 100%; padding: 0.3rem 2.5rem 0.3rem 0.5rem; border: 0.5px solid rgba(42, 42, 42, 0.5); border-radius: 3px; font-size: 0.85rem; background: #0a0a0a; color: white; outline: none;" />
+                <button id="pip-notes-save" style="position: absolute; right: 24px; top: 50%; transform: translateY(-50%); padding: 0.2rem; min-width: 20px; height: 20px; background: transparent; border: 1px solid transparent; color: #888; border-radius: 4px; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center;">
+                  <i class="pi pi-save"></i>
+                </button>
+                <button id="pip-notes-cancel" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); padding: 0.2rem; min-width: 20px; height: 20px; background: transparent; border: 1px solid transparent; color: #888; border-radius: 4px; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center;">
+                  <i class="pi pi-times"></i>
+                </button>
+              </div>
+              <button id="pip-globe" style="background: transparent; border: 1px solid transparent; color: #888; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; min-width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">
+                <i class="pi pi-globe"></i>
+              </button>
+            </div>
+            <div id="pip-saved-times" style="display: flex; flex-direction: column; gap: ${timerStore.viewMode === 'compact' ? '0.25rem' : '0.6rem'};">
+            </div>
+          </div>
+        `
+        updateSavedTimes()
+        // Add globe button listener
+        const globeBtn = pipDoc.getElementById('pip-globe')
+        if (globeBtn) {
+          globeBtn.addEventListener('click', () => {
+            timerStore.toggleViewMode()
+          })
+        }
+        // Setup notes input handlers in drawer
+        setupNotesInputInDrawer()
+      }
+      
+      function setupNotesInputInDrawer() {
+        const notesWrapper = pipDoc.getElementById('pip-notes-wrapper')
+        const notesInput = pipDoc.getElementById('pip-notes-input') as HTMLInputElement
+        const notesSaveBtn = pipDoc.getElementById('pip-notes-save')
+        const notesCancelBtn = pipDoc.getElementById('pip-notes-cancel')
+        
+        if (notesSaveBtn && notesInput) {
+          notesSaveBtn.addEventListener('click', () => {
+            if (timerStore.totalSeconds > 0) {
+              timerStore.saveTime(notesInput.value || '')
+              notesInput.value = ''
+              if (notesWrapper) {
+                notesWrapper.style.display = 'none'
+              }
+              updateSavedTimes()
+            }
+          })
+        }
+        
+        if (notesCancelBtn && notesInput) {
+          notesCancelBtn.addEventListener('click', () => {
+            notesInput.value = ''
+            if (notesWrapper) {
+              notesWrapper.style.display = 'none'
+            }
+          })
+        }
+        
+        if (notesInput) {
+          notesInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter' && notesSaveBtn) {
+              (notesSaveBtn as HTMLElement).click()
+            } else if (e.key === 'Escape' && notesCancelBtn) {
+              (notesCancelBtn as HTMLElement).click()
+            }
+          })
+        }
+      }
+      
       function updateSavedTimes() {
         const savedTimesContainer = pipDoc.getElementById('pip-saved-times')
         if (savedTimesContainer && pipDrawerOpen) {
           if (timerStore.savedTimes.length === 0) {
-            savedTimesContainer.innerHTML = '<div style="color: #666; text-align: center; padding: 1rem;">No saved times yet</div>'
+            savedTimesContainer.innerHTML = ''
           } else {
             savedTimesContainer.innerHTML = timerStore.savedTimes.map(st => {
               const isExpanded = expandedNotes.has(st.id)
@@ -335,29 +365,14 @@ export function usePictureInPicture() {
       
       if (drawerBtn && drawerIcon && drawerContainer) {
         drawerBtn.addEventListener('click', () => {
-          pipDrawerOpen = !pipDrawerOpen
-          drawerIcon.className = pipDrawerOpen ? 'pi pi-chevron-up' : 'pi pi-chevron-down'
-          
           if (pipDrawerOpen) {
-            // Show drawer in PiP window
-            drawerContainer.style.display = 'block'
-            // Create a simple drawer content (you can enhance this later)
-            drawerContainer.innerHTML = `
-              <div style="background: #0a0a0a; border: 0.5px solid rgba(26, 26, 26, 0.5); border-radius: 0 0 3px 3px; padding: 0.75rem; font-size: 0.85rem; color: #888;">
-                <div style="margin-bottom: 0.5rem; padding-bottom: 0.3rem; border-bottom: 0.5px solid rgba(26, 26, 26, 0.5); display: flex; justify-content: flex-end;">
-                  <button id="pip-globe" style="background: transparent; border: 1px solid transparent; color: #888; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; min-width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">
-                    <i class="pi pi-globe"></i>
-                  </button>
-                </div>
-                <div id="pip-saved-times" style="display: flex; flex-direction: column; gap: ${timerStore.viewMode === 'compact' ? '0.25rem' : '0.6rem'};">
-                  ${timerStore.savedTimes.length === 0 ? '<div style="color: #666; text-align: center; padding: 1rem;">No saved times yet</div>' : ''}
-                </div>
-              </div>
-            `
-            // Update saved times list
-            updateSavedTimes()
-          } else {
+            // Close drawer
+            pipDrawerOpen = false
+            drawerIcon.className = 'pi pi-chevron-down'
             drawerContainer.style.display = 'none'
+          } else {
+            // Open drawer
+            openDrawer()
           }
         })
       }
@@ -370,14 +385,6 @@ export function usePictureInPicture() {
         },
         { deep: true }
       )
-      
-      // Globe menu functionality - toggle view mode
-      const globeBtn = pipDoc.getElementById('pip-globe')
-      if (globeBtn) {
-        globeBtn.addEventListener('click', () => {
-          timerStore.toggleViewMode()
-        })
-      }
       
       // Listen for delete events
       window.addEventListener('pip-delete-time', ((e: CustomEvent) => {
@@ -414,6 +421,18 @@ export function usePictureInPicture() {
         } catch (e) {
           // Not available on this platform
         }
+      }
+      
+      // Also try to minimize via window management API if available
+      try {
+        // For PWAs, try to hide/minimize the window
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+          // On macOS, we can't directly minimize, but blurring helps
+          window.blur()
+          newWindow.focus()
+        }
+      } catch (e) {
+        // Not available
       }
 
       // Initial update

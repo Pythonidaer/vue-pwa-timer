@@ -15,7 +15,6 @@ const showMainContent = ref(true)
 window.addEventListener('pip-opened', () => {
   showMainContent.value = false
   // Try to minimize or hide the main window
-  // On macOS, we can't directly minimize, but blurring helps
   window.blur()
   // Try experimental minimize if available
   if ((window as any).minimize) {
@@ -23,6 +22,15 @@ window.addEventListener('pip-opened', () => {
       (window as any).minimize()
     } catch (e) {
       // Not available
+    }
+  }
+  // For PWAs, try additional methods
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    // Request to minimize (may not work on all platforms)
+    try {
+      window.blur()
+    } catch (e) {
+      // Ignore
     }
   }
 })
