@@ -272,7 +272,7 @@ export function usePictureInPicture() {
               <button id="pip-globe" style="background: transparent; border: 1px solid transparent; color: #888; padding: 0.2rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; min-width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-left: auto; position: relative; z-index: 2;">
                 <i class="pi pi-globe"></i>
               </button>
-              <div id="pip-globe-menu" style="display: none; position: fixed; background: #1a1a1a; border: 0.25px solid #2a2a2a; border-radius: 4px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); flex-direction: column; min-width: 120px; z-index: 10000; overflow: visible;">
+              <div id="pip-globe-menu" style="display: none; position: fixed; background: #1a1a1a; border: 0.25px solid #2a2a2a; border-radius: 4px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); flex-direction: column; min-width: 120px; width: auto; max-width: 260px; z-index: 10000; overflow: visible;">
                 <button id="pip-menu-export-all" class="pip-menu-item" style="background: none; border: none; color: #ccc; cursor: pointer; font-size: 0.85rem; padding: 0.5rem 0.75rem; text-align: left; transition: all 0.15s ease; border-bottom: 0.25px solid #2a2a2a; ${timerStore.savedTimes.length === 0 ? 'opacity: 0.3; cursor: not-allowed;' : ''}">
                   Export All
                 </button>
@@ -298,10 +298,12 @@ export function usePictureInPicture() {
             e.stopPropagation()
             showGlobeMenu = !showGlobeMenu
             if (showGlobeMenu) {
-              // Position dropdown relative to the button
+              // Position dropdown relative to the button in PiP window
               const rect = globeBtn.getBoundingClientRect()
+              // Position below the button, aligned to the right edge
               globeMenu.style.top = `${rect.bottom + 4}px`
-              globeMenu.style.right = `${window.innerWidth - rect.right}px`
+              globeMenu.style.right = `${(globeBtn.ownerDocument.defaultView || window).innerWidth - rect.right}px`
+              globeMenu.style.left = 'auto' // Override any left positioning
               globeMenu.style.display = 'flex'
             } else {
               globeMenu.style.display = 'none'
