@@ -2,11 +2,13 @@
 import { useTimerStore } from '@/stores/timer'
 import { ref } from 'vue'
 import SavedTimesDrawer from './SavedTimesDrawer.vue'
+import { usePictureInPicture } from '@/composables/usePictureInPicture'
 
 const timerStore = useTimerStore()
 const notesInput = ref('')
 const showNotesInput = ref(false)
 const showDrawer = ref(false)
+const { openPiP, isPiPOpen, isSupported } = usePictureInPicture()
 
 function handleStart() {
   if (timerStore.isRunning) {
@@ -43,7 +45,7 @@ function toggleDrawer() {
 <template>
   <div class="timer-container">
     <!-- Timer Panel -->
-    <div class="timer-panel">
+    <div class="timer-panel" style="position: relative;">
       <!-- Digital Display -->
       <div class="digital-display">
         <span class="time-digits">{{ timerStore.formattedTime }}</span>
@@ -88,6 +90,17 @@ function toggleDrawer() {
           </button>
         </div>
       </div>
+      
+      <!-- Picture-in-Picture Button -->
+      <button
+        v-if="isSupported"
+        class="btn-pip"
+        @click="openPiP"
+        :aria-label="isPiPOpen ? 'Picture-in-Picture is open' : 'Open in Picture-in-Picture'"
+        :title="isPiPOpen ? 'Picture-in-Picture is open' : 'Open in small floating window'"
+      >
+        <i class="pi pi-window-maximize"></i>
+      </button>
     </div>
     
     <!-- Saved Times Drawer -->
@@ -291,5 +304,33 @@ function toggleDrawer() {
 .drawer-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+.btn-pip {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: rgba(42, 42, 42, 0.6);
+  border: 0.5px solid rgba(42, 42, 42, 0.5);
+  color: #888;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  transition: all 0.15s ease;
+  z-index: 10;
+}
+
+.btn-pip:hover {
+  background: rgba(42, 42, 42, 0.8);
+  color: #ccc;
+}
+
+.btn-pip i {
+  font-size: 0.7rem;
 }
 </style>
