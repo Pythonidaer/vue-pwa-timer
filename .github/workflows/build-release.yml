@@ -100,8 +100,7 @@ jobs:
           TAURI_SIGNING_IDENTITY: ${{ secrets.MACOS_SIGNING_IDENTITY }}
         run: |
           cd apps/desktop
-          export CARGO_BUILD_TARGET=${{ matrix.target }}
-          npm run build
+          npx tauri build --target ${{ matrix.target }}
       
       - name: Find and rename artifact
         id: artifact
