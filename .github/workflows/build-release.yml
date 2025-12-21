@@ -108,10 +108,10 @@ jobs:
         shell: bash
         run: |
           cd apps/desktop/src-tauri/icons
-          # Install png-to-ico package to convert PNG to ICO
-          npm install -g png-to-ico || npm install png-to-ico --no-save
+          # Install png-to-ico package locally
+          npm install png-to-ico --no-save
           # Generate icon.ico from 128x128.png (Windows requires ICO format)
-          npx png-to-ico icon.ico 128x128.png || node -e "const pngToIco = require('png-to-ico'); pngToIco(['128x128.png']).then(buf => require('fs').writeFileSync('icon.ico', buf));"
+          npx png-to-ico icon.ico 128x128.png
       
       - name: Install Linux rollup dependency
         if: matrix.platform == 'ubuntu-latest'
