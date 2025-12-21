@@ -1,0 +1,171 @@
+name: Build Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., v0.1.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      version_no_v: ${{ steps.version.outputs.version_no_v }}
+    steps:
+      - name: Get version from tag or input
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION=${GITHUB_REF#refs/tags/}
+          fi
+          VERSION_NO_V=${VERSION#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version_no_v=$VERSION_NO_V" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION ($VERSION_NO_V)"
+
+  build:
+    needs: get-version
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'macos-14'
+            target: 'aarch64-apple-darwin'
+            artifact_suffix: 'aarch64.dmg'
+            bundle_path: 'apps/desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg'
+          - platform: 'macos-14'
+            target: 'x86_64-apple-darwin'
+            artifact_suffix: 'x64.dmg'
+            bundle_path: 'apps/desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/*.dmg'
+          - platform: 'windows-latest'
+            target: 'x86_64-pc-windows-msvc'
+            artifact_suffix: 'x64-setup.exe'
+            bundle_path: 'apps/desktop/src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe'
+          - platform: 'ubuntu-latest'
+            target: 'x86_64-unknown-linux-gnu'
+            artifact_suffix: 'amd64.AppImage'
+            bundle_path: 'apps/desktop/src-tauri/target/x86_64-unknown-linux-gnu/release/bundle/appimage/*.AppImage'
+
+    runs-on: ${{ matrix.platform }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      
+      - name: Install Linux dependencies
+        if: matrix.platform == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev
+      
+      - name: Install dependencies
+        run: |
+          npm install
+          cd apps/desktop
+          npm install
+      
+      - name: Build application
+        env:
+          TAURI_SIGNING_IDENTITY: ${{ secrets.MACOS_SIGNING_IDENTITY }}
+        run: |
+          cd apps/desktop
+          npm run build -- --target ${{ matrix.target }}
+      
+      - name: Find and rename artifact
+        id: artifact
+        run: |
+          cd apps/desktop
+          ARTIFACT=$(find ${{ matrix.bundle_path }} -type f | head -1)
+          if [ -z "$ARTIFACT" ]; then
+            echo "Error: No artifact found at ${{ matrix.bundle_path }}"
+            ls -la src-tauri/target/*/release/bundle/ || true
+            exit 1
+          fi
+          echo "Found artifact: $ARTIFACT"
+          ARTIFACT_NAME="Timer_${{ needs.get-version.outputs.version_no_v }}_${{ matrix.artifact_suffix }}"
+          cp "$ARTIFACT" "$ARTIFACT_NAME"
+          echo "name=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
+          echo "Artifact renamed to: $ARTIFACT_NAME"
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Timer_${{ needs.get-version.outputs.version_no_v }}_${{ matrix.artifact_suffix }}
+          path: apps/desktop/Timer_${{ needs.get-version.outputs.version_no_v }}_${{ matrix.artifact_suffix }}
+          retention-days: 30
+
+  release:
+    needs: [get-version, build]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-artifacts
+      
+      - name: List artifacts
+        run: |
+          echo "Artifacts downloaded:"
+          find release-artifacts -type f || true
+          ls -la release-artifacts/ || true
+      
+      - name: Check for release notes
+        id: release_notes
+        run: |
+          NOTES_FILE="RELEASE_NOTES_${{ needs.get-version.outputs.version }}.md"
+          if [ -f "$NOTES_FILE" ]; then
+            echo "has_notes=true" >> $GITHUB_OUTPUT
+            echo "notes_file=$NOTES_FILE" >> $GITHUB_OUTPUT
+          else
+            echo "has_notes=false" >> $GITHUB_OUTPUT
+            echo "notes_file=" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.get-version.outputs.version }}
+          name: Release ${{ needs.get-version.outputs.version }}
+          body_path: ${{ steps.release_notes.outputs.notes_file }}
+          files: release-artifacts/*
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
