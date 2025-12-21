@@ -42,14 +42,9 @@ const platforms: Platform[] = [
 function handleDownload(platform: Platform): void {
   if (platform.placeholder) return
   
-  // Direct download without opening new window
-  const link = document.createElement('a')
-  link.href = platform.url
-  link.download = platform.url.split('/').pop() || 'download'
-  link.style.display = 'none'
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
+  // Navigate directly to GitHub Release asset URL
+  // This triggers the browser's download since it's a direct file link
+  window.location.href = platform.url
 }
 </script>
 
