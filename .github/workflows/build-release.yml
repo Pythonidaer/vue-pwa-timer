@@ -98,6 +98,7 @@ jobs:
       
       - name: Install Windows rollup dependency
         if: matrix.platform == 'windows-latest'
+        shell: bash
         run: |
           cd apps/desktop
           npm install @rollup/rollup-win32-x64-msvc --save-optional || npm install @rollup/rollup-win32-x64-msvc --no-save
@@ -122,6 +123,7 @@ jobs:
       
       - name: Find and rename artifact
         id: artifact
+        shell: bash
         run: |
           cd apps/desktop
           # Try to find artifact in expected location
