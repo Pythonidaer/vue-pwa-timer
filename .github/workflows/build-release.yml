@@ -108,10 +108,10 @@ jobs:
         shell: bash
         run: |
           cd apps/desktop/src-tauri/icons
-          # Install png-to-ico package locally
-          npm install png-to-ico --no-save
+          # Install Pillow (PIL) for Python to convert PNG to ICO
+          python -m pip install Pillow --quiet
           # Generate icon.ico from 128x128.png (Windows requires ICO format)
-          npx png-to-ico icon.ico 128x128.png
+          python -c "from PIL import Image; img = Image.open('128x128.png'); img.save('icon.ico', format='ICO', sizes=[(256,256), (128,128), (64,64), (48,48), (32,32), (16,16)])"
       
       - name: Install Linux rollup dependency
         if: matrix.platform == 'ubuntu-latest'
