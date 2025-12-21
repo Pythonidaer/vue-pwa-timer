@@ -110,16 +110,12 @@ jobs:
           npm install @rollup/rollup-linux-x64-gnu --save-optional || npm install @rollup/rollup-linux-x64-gnu --no-save
       
       - name: Build application
+        shell: bash
         env:
           TAURI_SIGNING_IDENTITY: ${{ secrets.MACOS_SIGNING_IDENTITY }}
         run: |
           cd apps/desktop
-          # Skip code signing for Windows (not needed for basic builds)
-          if [ "${{ matrix.platform }}" == "windows-latest" ]; then
-            npm run tauri build -- --target ${{ matrix.target }} -- --config '{"bundle":{"windows":{"signingIdentity":null}}}'
-          else
-            npm run tauri build -- --target ${{ matrix.target }}
-          fi
+          npm run tauri build -- --target ${{ matrix.target }}
       
       - name: Find and rename artifact
         id: artifact
