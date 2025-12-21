@@ -40,6 +40,12 @@ coverage/
 apps/desktop/src-tauri/target/
 apps/desktop/src-tauri/Cargo.lock
 
+# Certificates and keys (security)
+*.cer
+*.key
+*.p12
+*.certSigningRequest
+
 # OS
 .DS_Store
 Thumbs.db
