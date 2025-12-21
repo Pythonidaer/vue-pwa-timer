@@ -186,13 +186,17 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
+          pattern: 'Timer_*'
           path: release-artifacts
+          merge-multiple: false
       
       - name: List artifacts
         run: |
           echo "Artifacts downloaded:"
           find release-artifacts -type f || true
           ls -la release-artifacts/ || true
+          echo "Checking for specific files:"
+          ls -la release-artifacts/*.exe release-artifacts/*.AppImage release-artifacts/*.dmg 2>/dev/null || echo "No matching files found"
       
       - name: Check for release notes
         id: release_notes
