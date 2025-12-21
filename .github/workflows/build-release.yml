@@ -109,12 +109,17 @@ jobs:
         run: |
           cd apps/desktop/src-tauri/icons
           # Install Pillow (PIL) for Python to convert PNG to ICO
-          python -m pip install Pillow --quiet
+          python -m pip install Pillow
           # Generate icon.ico from 128x128.png (Windows requires ICO format)
-          python -c "from PIL import Image; img = Image.open('128x128.png'); img.save('icon.ico', format='ICO', sizes=[(256,256), (128,128), (64,64), (48,48), (32,32), (16,16)])"
+          python -c "from PIL import Image; img = Image.open('128x128.png'); img.save('icon.ico', format='ICO', sizes=[(256,256), (128,128), (64,64), (48,48), (32,32), (16,16)])" || python -c "from PIL import Image; img = Image.open('128x128.png'); img.save('icon.ico', format='ICO')"
           # Verify icon.ico was created
-          ls -la icon.ico || (echo "Error: icon.ico was not created" && exit 1)
-          echo "icon.ico created successfully"
+          if [ ! -f "icon.ico" ]; then
+            echo "Error: icon.ico was not created"
+            ls -la
+            exit 1
+          fi
+          echo "icon.ico created successfully at $(pwd)/icon.ico"
+          file icon.ico
       
       - name: Install Linux rollup dependency
         if: matrix.platform == 'ubuntu-latest'
