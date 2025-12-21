@@ -108,7 +108,7 @@ jobs:
           TAURI_SIGNING_IDENTITY: ${{ secrets.MACOS_SIGNING_IDENTITY }}
         run: |
           cd apps/desktop
-          npm run build
+          npm run tauri build -- --target ${{ matrix.target }}
       
       - name: Find and rename artifact
         id: artifact
