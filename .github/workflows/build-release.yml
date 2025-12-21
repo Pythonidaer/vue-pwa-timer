@@ -100,18 +100,37 @@ jobs:
           TAURI_SIGNING_IDENTITY: ${{ secrets.MACOS_SIGNING_IDENTITY }}
         run: |
           cd apps/desktop
-          npm run build -- --target ${{ matrix.target }}
+          export CARGO_BUILD_TARGET=${{ matrix.target }}
+          npm run build
       
       - name: Find and rename artifact
         id: artifact
         run: |
           cd apps/desktop
-          ARTIFACT=$(find ${{ matrix.bundle_path }} -type f | head -1)
+          # Try to find artifact in expected location
+          ARTIFACT=$(find ${{ matrix.bundle_path }} -type f 2>/dev/null | head -1)
+          
+          # If not found, search more broadly
           if [ -z "$ARTIFACT" ]; then
-            echo "Error: No artifact found at ${{ matrix.bundle_path }}"
-            ls -la src-tauri/target/*/release/bundle/ || true
+            echo "Searching for artifacts in target directory..."
+            if [ "${{ matrix.platform }}" == "windows-latest" ]; then
+              ARTIFACT=$(find src-tauri/target/${{ matrix.target }}/release/bundle -name "*.exe" -o -name "*.msi" 2>/dev/null | head -1)
+            elif [ "${{ matrix.platform }}" == "ubuntu-latest" ]; then
+              ARTIFACT=$(find src-tauri/target/${{ matrix.target }}/release/bundle -name "*.AppImage" -o -name "*.deb" 2>/dev/null | head -1)
+            else
+              ARTIFACT=$(find src-tauri/target/${{ matrix.target }}/release/bundle -name "*.dmg" 2>/dev/null | head -1)
+            fi
+          fi
+          
+          if [ -z "$ARTIFACT" ]; then
+            echo "Error: No artifact found"
+            echo "Searched path: ${{ matrix.bundle_path }}"
+            echo "Target: ${{ matrix.target }}"
+            ls -la src-tauri/target/${{ matrix.target }}/release/bundle/ || true
+            find src-tauri/target/${{ matrix.target }}/release/bundle/ -type f 2>/dev/null || true
             exit 1
           fi
+          
           echo "Found artifact: $ARTIFACT"
           ARTIFACT_NAME="Timer_${{ needs.get-version.outputs.version_no_v }}_${{ matrix.artifact_suffix }}"
           cp "$ARTIFACT" "$ARTIFACT_NAME"
