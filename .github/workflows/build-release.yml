@@ -40,14 +40,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: 'macos-14'
-            target: 'aarch64-apple-darwin'
-            artifact_suffix: 'aarch64.dmg'
-            bundle_path: 'apps/desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg'
-          - platform: 'macos-14'
-            target: 'x86_64-apple-darwin'
-            artifact_suffix: 'x64.dmg'
-            bundle_path: 'apps/desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/*.dmg'
+          # macOS builds disabled - waiting for notarization setup
+          # - platform: 'macos-14'
+          #   target: 'aarch64-apple-darwin'
+          #   artifact_suffix: 'aarch64.dmg'
+          #   bundle_path: 'apps/desktop/src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg'
+          # - platform: 'macos-14'
+          #   target: 'x86_64-apple-darwin'
+          #   artifact_suffix: 'x64.dmg'
+          #   bundle_path: 'apps/desktop/src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/*.dmg'
           - platform: 'windows-latest'
             target: 'x86_64-pc-windows-msvc'
             artifact_suffix: 'x64-setup.exe'
@@ -112,7 +113,12 @@ jobs:
           TAURI_SIGNING_IDENTITY: ${{ secrets.MACOS_SIGNING_IDENTITY }}
         run: |
           cd apps/desktop
-          npm run tauri build -- --target ${{ matrix.target }}
+          # Skip code signing for Windows (not needed for basic builds)
+          if [ "${{ matrix.platform }}" == "windows-latest" ]; then
+            npm run tauri build -- --target ${{ matrix.target }} -- --config '{"bundle":{"windows":{"signingIdentity":null}}}'
+          else
+            npm run tauri build -- --target ${{ matrix.target }}
+          fi
       
       - name: Find and rename artifact
         id: artifact
