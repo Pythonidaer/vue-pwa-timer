@@ -112,6 +112,9 @@ jobs:
           python -m pip install Pillow --quiet
           # Generate icon.ico from 128x128.png (Windows requires ICO format)
           python -c "from PIL import Image; img = Image.open('128x128.png'); img.save('icon.ico', format='ICO', sizes=[(256,256), (128,128), (64,64), (48,48), (32,32), (16,16)])"
+          # Verify icon.ico was created
+          ls -la icon.ico || (echo "Error: icon.ico was not created" && exit 1)
+          echo "icon.ico created successfully"
       
       - name: Install Linux rollup dependency
         if: matrix.platform == 'ubuntu-latest'
@@ -132,26 +135,23 @@ jobs:
         shell: bash
         run: |
           cd apps/desktop
-          # Try to find artifact in expected location
-          ARTIFACT=$(find ${{ matrix.bundle_path }} -type f 2>/dev/null | head -1)
-          
-          # If not found, search more broadly
-          if [ -z "$ARTIFACT" ]; then
-            echo "Searching for artifacts in target directory..."
-            if [ "${{ matrix.platform }}" == "windows-latest" ]; then
-              ARTIFACT=$(find src-tauri/target/${{ matrix.target }}/release/bundle -name "*.exe" -o -name "*.msi" 2>/dev/null | head -1)
-            elif [ "${{ matrix.platform }}" == "ubuntu-latest" ]; then
-              ARTIFACT=$(find src-tauri/target/${{ matrix.target }}/release/bundle -name "*.AppImage" -o -name "*.deb" 2>/dev/null | head -1)
-            else
-              ARTIFACT=$(find src-tauri/target/${{ matrix.target }}/release/bundle -name "*.dmg" 2>/dev/null | head -1)
-            fi
+          # Search for artifact based on platform
+          if [ "${{ matrix.platform }}" == "windows-latest" ]; then
+            ARTIFACT=$(find src-tauri/target/${{ matrix.target }}/release/bundle -name "*.exe" -o -name "*.msi" 2>/dev/null | head -1)
+          elif [ "${{ matrix.platform }}" == "ubuntu-latest" ]; then
+            ARTIFACT=$(find src-tauri/target/${{ matrix.target }}/release/bundle -name "*.AppImage" -o -name "*.deb" 2>/dev/null | head -1)
+          else
+            ARTIFACT=$(find src-tauri/target/${{ matrix.target }}/release/bundle -name "*.dmg" 2>/dev/null | head -1)
           fi
           
           if [ -z "$ARTIFACT" ]; then
             echo "Error: No artifact found"
-            echo "Searched path: ${{ matrix.bundle_path }}"
+            echo "Platform: ${{ matrix.platform }}"
             echo "Target: ${{ matrix.target }}"
+            echo "Expected bundle path: ${{ matrix.bundle_path }}"
+            echo "Listing bundle directory:"
             ls -la src-tauri/target/${{ matrix.target }}/release/bundle/ || true
+            echo "Searching for any files:"
             find src-tauri/target/${{ matrix.target }}/release/bundle/ -type f 2>/dev/null || true
             exit 1
           fi
