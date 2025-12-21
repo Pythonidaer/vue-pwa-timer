@@ -105,12 +105,13 @@ jobs:
       
       - name: Generate Windows icon.ico
         if: matrix.platform == 'windows-latest'
+        shell: bash
         run: |
           cd apps/desktop/src-tauri/icons
-          # Install ImageMagick using Chocolatey (Windows package manager)
-          choco install imagemagick -y
+          # Install png-to-ico package to convert PNG to ICO
+          npm install -g png-to-ico || npm install png-to-ico --no-save
           # Generate icon.ico from 128x128.png (Windows requires ICO format)
-          magick convert 128x128.png -define icon:auto-resize=256,128,64,48,32,16 icon.ico
+          npx png-to-ico icon.ico 128x128.png || node -e "const pngToIco = require('png-to-ico'); pngToIco(['128x128.png']).then(buf => require('fs').writeFileSync('icon.ico', buf));"
       
       - name: Install Linux rollup dependency
         if: matrix.platform == 'ubuntu-latest'
