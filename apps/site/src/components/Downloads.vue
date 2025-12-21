@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // GitHub repository
 const githubRepo: string = 'Pythonidaer/vue-pwa-timer'
-const version: string = 'v0.1.0'
+const version: string = 'v0.1.1-test'
 
 interface Platform {
   name: string
@@ -19,31 +19,37 @@ const platforms: Platform[] = [
     description: 'Download for Mac (Intel & Apple Silicon)',
     placeholder: false,
     // GitHub Release asset URLs - these will be available after creating the release
-    url: `https://github.com/${githubRepo}/releases/download/${version}/Timer_0.1.0_aarch64.dmg`,
+    url: `https://github.com/${githubRepo}/releases/download/${version}/Timer_0.1.1-test_aarch64.dmg`,
     // Alternative: Intel Mac
-    urlIntel: `https://github.com/${githubRepo}/releases/download/${version}/Timer_0.1.0_x64.dmg`
+    urlIntel: `https://github.com/${githubRepo}/releases/download/${version}/Timer_0.1.1-test_x64.dmg`
   },
   {
     name: 'Windows',
     icon: '🪟',
     description: 'Download for Windows',
     placeholder: false,
-    url: `https://github.com/${githubRepo}/releases/download/${version}/Timer_0.1.0_x64-setup.exe`
+    url: `https://github.com/${githubRepo}/releases/download/${version}/Timer_0.1.1-test_x64-setup.exe`
   },
   {
     name: 'Linux',
     icon: '🐧',
     description: 'Download for Linux',
     placeholder: false,
-    url: `https://github.com/${githubRepo}/releases/download/${version}/Timer_0.1.0_amd64.AppImage`
+    url: `https://github.com/${githubRepo}/releases/download/${version}/Timer_0.1.1-test_amd64.AppImage`
   }
 ]
 
 function handleDownload(platform: Platform): void {
   if (platform.placeholder) return
   
-  // Open download link
-  window.open(platform.url, '_blank')
+  // Direct download without opening new window
+  const link = document.createElement('a')
+  link.href = platform.url
+  link.download = platform.url.split('/').pop() || 'download'
+  link.style.display = 'none'
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
 }
 </script>
 
