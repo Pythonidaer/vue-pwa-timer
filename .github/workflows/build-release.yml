@@ -94,14 +94,18 @@ jobs:
           npm install
           cd apps/desktop
           npm install
-          # Fix Windows rollup optional dependency issue
-          if [ "${{ matrix.platform }}" == "windows-latest" ]; then
-            npm install @rollup/rollup-win32-x64-msvc --save-optional || npm install @rollup/rollup-win32-x64-msvc --no-save
-          fi
-          # Fix Linux rollup optional dependency issue
-          if [ "${{ matrix.platform }}" == "ubuntu-latest" ]; then
-            npm install @rollup/rollup-linux-x64-gnu --save-optional || npm install @rollup/rollup-linux-x64-gnu --no-save
-          fi
+      
+      - name: Install Windows rollup dependency
+        if: matrix.platform == 'windows-latest'
+        run: |
+          cd apps/desktop
+          npm install @rollup/rollup-win32-x64-msvc --save-optional || npm install @rollup/rollup-win32-x64-msvc --no-save
+      
+      - name: Install Linux rollup dependency
+        if: matrix.platform == 'ubuntu-latest'
+        run: |
+          cd apps/desktop
+          npm install @rollup/rollup-linux-x64-gnu --save-optional || npm install @rollup/rollup-linux-x64-gnu --no-save
       
       - name: Build application
         env:
