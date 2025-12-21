@@ -94,13 +94,21 @@ jobs:
           npm install
           cd apps/desktop
           npm install
+          # Fix Windows rollup optional dependency issue
+          if [ "${{ matrix.platform }}" == "windows-latest" ]; then
+            npm install @rollup/rollup-win32-x64-msvc --save-optional || npm install @rollup/rollup-win32-x64-msvc --no-save
+          fi
+          # Fix Linux rollup optional dependency issue
+          if [ "${{ matrix.platform }}" == "ubuntu-latest" ]; then
+            npm install @rollup/rollup-linux-x64-gnu --save-optional || npm install @rollup/rollup-linux-x64-gnu --no-save
+          fi
       
       - name: Build application
         env:
           TAURI_SIGNING_IDENTITY: ${{ secrets.MACOS_SIGNING_IDENTITY }}
         run: |
           cd apps/desktop
-          npx tauri build --target ${{ matrix.target }}
+          npm run build
       
       - name: Find and rename artifact
         id: artifact
