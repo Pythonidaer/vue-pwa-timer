@@ -42,9 +42,17 @@ const platforms: Platform[] = [
 function handleDownload(platform: Platform): void {
   if (platform.placeholder) return
   
-  // Navigate directly to GitHub Release asset URL
-  // This triggers the browser's download since it's a direct file link
-  window.location.href = platform.url
+  // Create a temporary anchor element and click it
+  // This method works better for cross-origin downloads
+  const link = document.createElement('a')
+  link.href = platform.url
+  link.target = '_blank'
+  link.rel = 'noopener noreferrer'
+  // Try to set download attribute (may not work cross-origin, but helps when it does)
+  link.download = platform.url.split('/').pop() || 'download'
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
 }
 </script>
 
