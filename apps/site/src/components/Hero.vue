@@ -1,13 +1,14 @@
 <script setup lang="ts">
-defineEmits<{
+const emit = defineEmits<{
   scrollTo: [id: string]
 }>()
 
-const scrollTo = (id: string) => {
+const scrollTo = (id: string): void => {
   const element = document.getElementById(id)
   if (element) {
     element.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
+  emit('scrollTo', id)
 }
 </script>
 

@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import Hero from './components/Hero.vue'
 import About from './components/About.vue'
 import Developer from './components/Developer.vue'
 import Downloads from './components/Downloads.vue'
 
-const scrollTo = (id: string) => {
+const scrollTo = (id: string): void => {
   const element = document.getElementById(id)
   if (element) {
     element.scrollIntoView({ behavior: 'smooth', block: 'start' })

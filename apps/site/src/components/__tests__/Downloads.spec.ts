@@ -15,11 +15,12 @@ describe('Downloads', () => {
     expect(wrapper.text()).toContain('Linux')
   })
 
-  it('shows coming soon for placeholder downloads', () => {
+  it('shows download buttons for available platforms', () => {
     const wrapper = mount(Downloads)
     const buttons = wrapper.findAll('button')
-    const comingSoonButtons = buttons.filter(btn => btn.text().includes('Coming Soon'))
-    expect(comingSoonButtons.length).toBeGreaterThan(0)
+    const downloadButtons = buttons.filter(btn => btn.text().includes('Download'))
+    expect(downloadButtons.length).toBeGreaterThan(0)
+    expect(downloadButtons.length).toBe(3) // macOS, Windows, Linux
   })
 })
 

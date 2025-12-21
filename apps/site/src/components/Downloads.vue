@@ -1,9 +1,18 @@
 <script setup lang="ts">
 // GitHub repository
-const githubRepo = 'Pythonidaer/vue-pwa-timer'
-const version = 'v0.1.0'
+const githubRepo: string = 'Pythonidaer/vue-pwa-timer'
+const version: string = 'v0.1.0'
 
-const platforms = [
+interface Platform {
+  name: string
+  icon: string
+  description: string
+  placeholder: boolean
+  url: string
+  urlIntel?: string
+}
+
+const platforms: Platform[] = [
   {
     name: 'macOS',
     icon: '🍎',
@@ -30,7 +39,7 @@ const platforms = [
   }
 ]
 
-function handleDownload(platform: typeof platforms[0]) {
+function handleDownload(platform: Platform): void {
   if (platform.placeholder) return
   
   // Open download link
