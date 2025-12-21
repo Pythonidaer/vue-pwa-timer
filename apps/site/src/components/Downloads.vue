@@ -27,14 +27,14 @@ const platforms: Platform[] = [
     name: 'Windows',
     icon: '🪟',
     description: 'Download for Windows',
-    placeholder: true,
+    placeholder: false,
     url: `https://github.com/${githubRepo}/releases/download/${version}/Timer_0.1.0_x64-setup.exe`
   },
   {
     name: 'Linux',
     icon: '🐧',
     description: 'Download for Linux',
-    placeholder: true,
+    placeholder: false,
     url: `https://github.com/${githubRepo}/releases/download/${version}/Timer_0.1.0_amd64.AppImage`
   }
 ]
