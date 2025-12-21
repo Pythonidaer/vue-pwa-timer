@@ -103,6 +103,15 @@ jobs:
           cd apps/desktop
           npm install @rollup/rollup-win32-x64-msvc --save-optional || npm install @rollup/rollup-win32-x64-msvc --no-save
       
+      - name: Generate Windows icon.ico
+        if: matrix.platform == 'windows-latest'
+        run: |
+          cd apps/desktop/src-tauri/icons
+          # Install ImageMagick using Chocolatey (Windows package manager)
+          choco install imagemagick -y
+          # Generate icon.ico from 128x128.png (Windows requires ICO format)
+          magick convert 128x128.png -define icon:auto-resize=256,128,64,48,32,16 icon.ico
+      
       - name: Install Linux rollup dependency
         if: matrix.platform == 'ubuntu-latest'
         run: |
