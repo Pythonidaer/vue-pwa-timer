@@ -207,6 +207,19 @@ jobs:
           echo "Checking for specific files:"
           ls -la release-artifacts/*.exe release-artifacts/*.AppImage release-artifacts/*.dmg 2>/dev/null || echo "No matching files found"
       
+      - name: Verify artifacts exist
+        id: verify_artifacts
+        run: |
+          ARTIFACT_COUNT=$(find release-artifacts -type f -name "Timer_*" | wc -l)
+          echo "Found $ARTIFACT_COUNT artifacts"
+          if [ "$ARTIFACT_COUNT" -eq "0" ]; then
+            echo "Error: No artifacts found to upload!"
+            exit 1
+          fi
+          # List all artifacts that will be uploaded
+          find release-artifacts -type f -name "Timer_*" -exec echo "Artifact: {}" \;
+          echo "has_artifacts=true" >> $GITHUB_OUTPUT
+      
       - name: Check for release notes
         id: release_notes
         run: |
@@ -225,7 +238,10 @@ jobs:
           tag_name: ${{ needs.get-version.outputs.version }}
           name: Release ${{ needs.get-version.outputs.version }}
           body_path: ${{ steps.release_notes.outputs.notes_file }}
-          files: release-artifacts/*
+          files: |
+            release-artifacts/Timer_*.exe
+            release-artifacts/Timer_*.AppImage
+            release-artifacts/Timer_*.dmg
           draft: false
           prerelease: false
         env:
