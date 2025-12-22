@@ -17,11 +17,11 @@ const platforms: Platform[] = [
     name: 'macOS',
     icon: '🍎',
     description: 'Download for Mac (Intel & Apple Silicon)',
-    placeholder: false,
+    placeholder: true, // Waiting for notarization (12-24 hours)
     // GitHub Release asset URLs - these will be available after creating the release
-    url: `https://github.com/${githubRepo}/releases/download/${version}/Timer_0.1.1-test_aarch64.dmg`,
+    url: `https://github.com/${githubRepo}/releases/download/v0.1.0/Timer_0.1.0_aarch64.dmg`,
     // Alternative: Intel Mac
-    urlIntel: `https://github.com/${githubRepo}/releases/download/${version}/Timer_0.1.1-test_x64.dmg`
+    urlIntel: `https://github.com/${githubRepo}/releases/download/v0.1.0/Timer_0.1.0_x64.dmg`
   },
   {
     name: 'Windows',
@@ -73,7 +73,9 @@ function handleDownload(platform: Platform): void {
             {{ platform.placeholder ? 'Coming Soon' : 'Download' }}
           </button>
           <p v-if="platform.placeholder" class="placeholder-note">
-            Downloads will be available after the first release
+            {{ platform.name === 'macOS' 
+              ? 'macOS build pending notarization (12-24 hours)' 
+              : 'Downloads will be available after the first release' }}
           </p>
         </div>
       </div>

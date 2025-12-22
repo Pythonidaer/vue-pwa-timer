@@ -190,6 +190,15 @@ jobs:
           path: release-artifacts
           merge-multiple: false
       
+      - name: Flatten artifacts (move files to root)
+        run: |
+          # Move all files from subdirectories to release-artifacts root
+          find release-artifacts -type f -exec mv {} release-artifacts/ \;
+          # Remove empty subdirectories
+          find release-artifacts -type d -empty -delete
+          echo "Artifacts after flattening:"
+          ls -la release-artifacts/
+      
       - name: List artifacts
         run: |
           echo "Artifacts downloaded:"
