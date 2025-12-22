@@ -3,7 +3,6 @@ import { useTimerStore } from '@/stores/timer'
 import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import SavedTimesDrawer from './SavedTimesDrawer.vue'
 import { getCurrentWindow, LogicalSize, LogicalPosition } from '@tauri-apps/api/window'
-import { exit } from '@tauri-apps/api/process'
 
 const timerStore = useTimerStore()
 const notesInput = ref('')
@@ -102,7 +101,8 @@ onMounted(async () => {
       // Escape key to close app
       if (e.key === 'Escape' && !e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey) {
         try {
-          await exit(0)
+          const appWindow = getCurrentWindow()
+          await appWindow.close()
         } catch (error) {
           console.error('Failed to close app:', error)
         }
@@ -110,7 +110,8 @@ onMounted(async () => {
       // Ctrl+Q or Ctrl+W to close (Windows/Linux standard)
       if ((e.key === 'q' || e.key === 'w') && e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey) {
         try {
-          await exit(0)
+          const appWindow = getCurrentWindow()
+          await appWindow.close()
         } catch (error) {
           console.error('Failed to close app:', error)
         }
