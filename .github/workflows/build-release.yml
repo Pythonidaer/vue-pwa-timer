@@ -142,7 +142,13 @@ jobs:
           cd apps/desktop
           # Search for artifact based on platform
           if [ "${{ matrix.platform }}" == "windows-latest" ]; then
-            ARTIFACT=$(find src-tauri/target/${{ matrix.target }}/release/bundle -name "*.exe" -o -name "*.msi" 2>/dev/null | head -1)
+            # Tauri creates NSIS installer in bundle/nsis/ directory
+            # Look specifically for NSIS installer first, then fall back to any .exe or .msi
+            ARTIFACT=$(find src-tauri/target/${{ matrix.target }}/release/bundle/nsis -name "*.exe" 2>/dev/null | head -1)
+            if [ -z "$ARTIFACT" ]; then
+              echo "NSIS installer not found, searching for any .exe or .msi..."
+              ARTIFACT=$(find src-tauri/target/${{ matrix.target }}/release/bundle -name "*.exe" -o -name "*.msi" 2>/dev/null | head -1)
+            fi
           elif [ "${{ matrix.platform }}" == "ubuntu-latest" ]; then
             ARTIFACT=$(find src-tauri/target/${{ matrix.target }}/release/bundle -name "*.AppImage" -o -name "*.deb" 2>/dev/null | head -1)
           else
@@ -162,6 +168,13 @@ jobs:
           fi
           
           echo "Found artifact: $ARTIFACT"
+          # Verify it's a valid file (not empty, has reasonable size)
+          FILE_SIZE=$(stat -f%z "$ARTIFACT" 2>/dev/null || stat -c%s "$ARTIFACT" 2>/dev/null || echo "0")
+          echo "Artifact size: $FILE_SIZE bytes"
+          if [ "$FILE_SIZE" -lt 1000 ]; then
+            echo "Warning: Artifact file is suspiciously small ($FILE_SIZE bytes)"
+          fi
+          
           ARTIFACT_NAME="Timer_${{ needs.get-version.outputs.version_no_v }}_${{ matrix.artifact_suffix }}"
           cp "$ARTIFACT" "$ARTIFACT_NAME"
           echo "name=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
