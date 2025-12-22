@@ -193,11 +193,14 @@ jobs:
       - name: Flatten artifacts (move files to root)
         run: |
           # Move all files from subdirectories to release-artifacts root
-          find release-artifacts -type f -exec mv {} release-artifacts/ \;
+          # Use -mindepth 2 to only find files in subdirectories, not root
+          find release-artifacts -mindepth 2 -type f -exec mv {} release-artifacts/ \;
           # Remove empty subdirectories
-          find release-artifacts -type d -empty -delete
+          find release-artifacts -mindepth 1 -type d -empty -delete
           echo "Artifacts after flattening:"
           ls -la release-artifacts/
+          echo "File count in root:"
+          find release-artifacts -maxdepth 1 -type f | wc -l
       
       - name: List artifacts
         run: |
